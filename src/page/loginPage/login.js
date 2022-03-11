@@ -8,6 +8,8 @@ import ContentLogo from '../../assets/logo/content-logo.png'
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {loginUser } from "../../apis/login";
+import TokenService from './../../apis/auth/token';
+
 
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -39,7 +41,6 @@ const Login = () => {
 
   const stillCantLogin = (email) =>{
    let findIndex = invalidEmailCount.findIndex(item => item.email == email)
-    console.log(invalidEmailCount[findIndex], ' ini dia')
     if(findIndex > -1){
       if(invalidEmailCount[findIndex].cantLogin){
         setIsStillCantLogin(true)
@@ -51,7 +52,6 @@ const Login = () => {
     return true
   }
 
-  console.log(invalidEmailCount, ' ini isi array email nya')
 
   const handleSubmit = async(values,isValid) =>{
     if(!isValid) {
@@ -67,7 +67,8 @@ const Login = () => {
     }
 
     try{
-      await loginUser(payload)
+      let response = await loginUser(payload)
+      saveIntoLocalStorage(response.data, payload)
 
       setIsStillCantLogin(false)
       setInvalidData(false)
@@ -76,8 +77,17 @@ const Login = () => {
       setIsStillCantLogin(false)
       setInvalidData(true)
       putIntoEmailInvalidCount(values.email)
-
     }
+  }
+
+  const saveIntoLocalStorage = (data, userData) =>{
+    const token = data.data.token;
+    const obj = {
+      userEmail: userData.username,
+    };
+    const encryptedData = window.btoa(JSON.stringify(obj));
+    localStorage.setItem('foodUserData', encryptedData);
+    TokenService.setToken('Food-Token', token);
   }
 
   const putIntoEmailInvalidCount = (email) =>{
@@ -121,7 +131,6 @@ const Login = () => {
     }, 60000)
   }
 
-  console.log(invalidEmailCount, ' ini dia')
   const renderContent = () =>{
     return <Formik
       validationSchema={schema}
