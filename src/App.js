@@ -5,7 +5,10 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import 'antd/dist/antd.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './page/loginPage/login'
+import './index.css'
 
 function App() {
   return (

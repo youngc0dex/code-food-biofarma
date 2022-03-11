@@ -1,0 +1,66 @@
+
+.login{
+
+  min-height: 100vh;
+  &-header{
+    background-color: #FFFFFF;
+  }
+
+  &-content{
+    background-color: #ef5734;
+  }
+
+  &-footer{
+    background-color: #FFFFFF;
+    min-height: 10vw;
+  }
+}
+
+.logo{
+  &-wrapper{
+    text-align: center;
+    line-height: 300px;
+  }
+
+  &-image{
+    width: 60%;
+    margin: auto;
+    vertical-align: middle;
+  }
+}
+
+.card{
+  &-settings{
+    width: 60%;
+    margin:1em auto;
+    padding:1em;
+    min-height: 30vw;
+    border-radius: 6px;
+  }
+
+  &-login{
+    &-header{
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 27px;
+      font-family: 'Poppins', sans-serif;
+    }
+    &-skip{
+      &-text{
+        font-family: 'Poppins', sans-serif;
+        color:#EF5734;
+        position: absolute;
+        bottom: 0;
+        width: 85%;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  align-self: center;
+  margin: auto;
+}
