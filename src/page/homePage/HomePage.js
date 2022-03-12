@@ -5,17 +5,29 @@ import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
 import {message} from 'antd'
 import HeaderLogo from '../../assets/logo/header-logo.png'
 import HistoryPNG from '../../assets/others/historyPNG.png'
+import empty from '../../assets/others/empty.png'
+import clear from '../../assets/others/x-button.png'
+
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
-import {getCategoryFood, getFilteredRecipes, getRecipes, getSortedRecipeDataBySortName} from "../../apis/food";
+import {
+  getCategoryFood,
+  getFilteredRecipes,
+  getRecipes,
+  getSearchedRecipe, getSearchedRecipeByCateogry,
+  getSortedRecipeDataBySortName
+} from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
+  const [masterFoodData, setMasterFoodData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
   const [currentSort, setCurrentSort] = useState('new')
   const [currentCategory, setCurrentCategory] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [suggestion, setSuggestion] = useState([])
   let navigate = useNavigate()
 
   useEffect(() => {
@@ -23,16 +35,29 @@ const HomePage = (props) => {
     getCategoryFoodData()
   }, []);
 
+
   const getFoodData = async() =>{
     setLoad(true)
     try{
       let response = await getRecipes()
       let recipeData = response.data.data
       setFoodData(recipeData)
+      setMasterFoodData(recipeData)
       setLoad(false)
     }catch(e){
       message.error('Error when fetching recipes data')
       setLoad(false)
+    }
+  }
+
+  const handleSearchRecipe =async() =>{
+    try{
+      let response = await getSearchedRecipe(searchQuery)
+      let responseData = response.data.data
+      setFoodData(responseData)
+      setSuggestion([])
+    }catch(e){
+      message.error('Error when fetching searched recipe')
     }
   }
 
@@ -51,9 +76,32 @@ const HomePage = (props) => {
     }
   }
 
+  const handleClearQuery = () =>{
+    setSearchQuery('')
+    setSuggestion([])
+    getFoodData()
+  }
+
   const handleNavigateToHomePage = () =>{
     navigate('/code-food-homepage')
   }
+
+  const handleClickSuggestion = (item) =>{
+    navigate('/')
+  }
+
+  const renderSuggestionBox = () =>{
+    if(suggestion.length > 0){
+      return <div className={'suggestion-box'} data-cy={'search-suggestion-container'}>
+        {suggestion.map(item =>{
+          return <div style={{padding: '0.5em', cursor:'pointer'}} onClick={() =>handleClickSuggestion(item)}>
+            <p style={{marginBottom:'0'}}>{item.name}</p>
+          </div>})}
+      </div>
+    }
+    return
+  }
+
 
   const renderHeader = () =>{
     return <div className={'homepage-header-wrapper'}>
@@ -65,7 +113,10 @@ const HomePage = (props) => {
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} data-cy={"header-input-search"}/> <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} data-cy={"header-button-search"}>Cari</Button>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy={"header-input-search"} onChange={(e) => handleInputSearch(e.target.value)}/>
+            {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
+              : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()} data-cy={"header-button-search"}>Cari</Button>
+            {renderSuggestionBox()}
           </div>
         </Col>
         <Col style={{margin:'auto'}}>
@@ -97,9 +148,30 @@ const HomePage = (props) => {
     return 'category-non-active'
   }
 
+  const handleSearchRecipeByCategory = async(id) =>{
+    setLoad(true)
+    try{
+      let response = await getSearchedRecipeByCateogry(searchQuery, id)
+      let responseData = response.data.data
+      setFoodData(responseData)
+      setLoad(false)
+    }catch(e){
+      message.error('Error when fetching data recipe by category')
+      setLoad(false)
+    }
+  }
+
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
     setCurrentSort('new')
+    if(searchQuery){
+      if(id == 0){
+        handleSearchRecipe()
+        return
+      }
+      handleSearchRecipeByCategory(id)
+      return
+    }
     setLoad(true)
     try{
       let response = await getFilteredRecipes(id)
@@ -114,7 +186,10 @@ const HomePage = (props) => {
 
   const handleRenderContent = () =>{
     if(!foodData.recipes || foodData.recipes.length == 0){
-      return <h2>No Recipes at the moment</h2>
+      return <div style={{margin:'0 auto', width:'587', height:'332'}}>
+        <img src={empty} data-cy={'list-image-empty'}/>
+      <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
+      </div>
     }
     return foodData.recipes.map((item,index) => {
       return <FoodCard index ={index} recipe={item}/>
@@ -178,6 +253,22 @@ const HomePage = (props) => {
     return sortButton.map(item => {return <Button className={renderStyleActiveSort(item.code)} style={{margin:'0 10px'}} onClick={() =>handleSort(item.code)}>
       {item.name}
     </Button>})
+  }
+
+
+  const handleInputSearch = (query) =>{
+    setSearchQuery(query)
+    if(masterFoodData.recipes.length > 0){
+          let matchesNew = masterFoodData.recipes.filter(item => {
+              return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
+            }
+          );
+          setSuggestion(matchesNew)
+    }
+
+    if(!query){
+      setSuggestion([])
+    }
   }
 
 

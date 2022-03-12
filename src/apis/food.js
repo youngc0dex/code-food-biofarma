@@ -16,3 +16,11 @@ export const getSortedRecipeDataBySortName = (name) =>{
 export const getFilteredRecipes = (id) =>{
   return axios.get(API_BASE_URL +'/recipes?categoryId='+id)
 }
+
+export const getSearchedRecipe = (query) =>{
+  return axios.get(API_BASE_URL +'/recipes?q=' +query)
+}
+
+export const getSearchedRecipeByCateogry = (searchQuery, categoryId) =>{
+  return axios.get(API_BASE_URL +`/recipes?q=${searchQuery}&categoryId=${categoryId}`)
+}
