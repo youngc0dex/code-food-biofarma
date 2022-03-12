@@ -82,12 +82,19 @@ const HomePage = (props) => {
     getFoodData()
   }
 
-  const handleNavigateToHomePage = () =>{
-    navigate('/code-food-homepage')
+  const handleNavigateLogin = () =>{
+    navigate('/login')
   }
 
   const handleClickSuggestion = (item) =>{
     navigate('/')
+  }
+
+  const handleNavigateHistory = () =>{
+    let foodToken = localStorage.getItem('Food-Token')
+    if(!foodToken){
+      navigate('/login')
+    }
   }
 
   const renderSuggestionBox = () =>{
@@ -108,7 +115,7 @@ const HomePage = (props) => {
       <Row style={{height:'65%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <img src={HeaderLogo} data-cy={"header-logo"} onClick={() => handleNavigateToHomePage()} style={{cursor:'pointer'}}/>
+            <img src={HeaderLogo} data-cy={"header-logo"} onClick={() => handleNavigateLogin()} style={{cursor:'pointer'}}/>
           </div>
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
@@ -121,7 +128,7 @@ const HomePage = (props) => {
         </Col>
         <Col style={{margin:'auto'}}>
           <div>
-            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-logo"}/>
+            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"} onClick={() =>handleNavigateHistory()}/>
           </div>
         </Col>
       </Row>

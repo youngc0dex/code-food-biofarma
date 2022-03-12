@@ -77,7 +77,7 @@ const Login = () => {
       setIsStillCantLogin(false)
       setInvalidData(false)
       setInvalidCountWarning(false)
-      navigate('/code-food-homepage')
+      navigate('/')
     }catch(e){
       setIsStillCantLogin(false)
       setInvalidData(true)
@@ -137,7 +137,7 @@ const Login = () => {
   }
 
   const handleSkipLogin = () =>{
-    navigate('/code-food-homepage')
+    navigate('/')
   }
 
   const renderContent = () =>{

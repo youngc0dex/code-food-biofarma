@@ -13,10 +13,11 @@ import './index.css'
 
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
-        <Routes>
-          <Route exact path='/' element={<Login/>} />
-          <Route path='/code-food-homepage' element ={<Homepage/>}/>
+    // <Router basename={process.env.PUBLIC_URL}>
+    <Router >
+      <Routes>
+          <Route exact path='/' element={<Homepage/>} />
+          <Route path='/login' element ={<Login/>}/>
         </Routes >
     </Router>
   );
