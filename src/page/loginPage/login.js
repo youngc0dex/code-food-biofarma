@@ -39,7 +39,7 @@ const Login = () => {
 
   const renderLogo = () =>{
     return <div>
-      <img data-cy="header-logo" src={HeaderLogo}/>
+      <img data-cy="header-logo" src={HeaderLogo} onClick={() => navigate('/')} style={{cursor:'pointer'}}/>
     </div>
   }
 
@@ -180,7 +180,7 @@ const Login = () => {
                 <div style={{display: invalidData ? 'block' : 'none'}}>
                   <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
                     <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Email / Password anda salah</p>
-                    <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} onClick={() => setInvalidData(false)}>OK</p>
+                    <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setInvalidData(false)}>OK</p>
                   </div>
                 </div>
                 <div className={'card-content'}>
