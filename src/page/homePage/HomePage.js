@@ -8,6 +8,7 @@ import HistoryPNG from '../../assets/others/historyPNG.png'
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
 import {getRecipes} from "../../apis/food";
+import FoodCard from "../../component/card/FoodCard";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
@@ -58,9 +59,12 @@ const HomePage = (props) => {
   }
 
   const handleRenderContent = () =>{
-    return <div>
-
-    </div>
+    if(!foodData.recipes || foodData.recipes.length == 0){
+      return <h2>No Recipes at the moment</h2>
+    }
+    return foodData.recipes.map((item,index) => {
+      return <FoodCard index ={index} recipe={item}/>
+    })
   }
 
   const renderSpinner = () =>{
@@ -75,8 +79,12 @@ const HomePage = (props) => {
       <div className={'homepage-header'}>
         {renderHeader()}
       </div>
-      <div className={'homepage-body'}>
-        {load ? renderSpinner() : handleRenderContent()}
+      <div style={{backgroundColor:'#E5E5E5'}}>
+        <div className={'homepage-body'}>
+          {load ? renderSpinner() : <div className={'homepage-body-cards'}>
+            {handleRenderContent()}
+          </div>}
+        </div>
       </div>
     </div>
   );
