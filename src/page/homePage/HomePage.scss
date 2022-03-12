@@ -8,6 +8,7 @@
   width:100%;
   background-color: #E5E5E5;
 
+
   &-header{
     background-color: white;
     position: fixed;
@@ -15,9 +16,48 @@
     z-index: 1000;
     &-wrapper{
       max-width: 80vw;
-      height: 100px;
+      height: 120px;
       margin: auto;
       display: block;
+    }
+
+    &-category{
+      &-wrapper{
+        display:flex;
+        position:absolute;
+        bottom:5px;
+        flex-wrap: wrap;
+      }
+
+      &-button{
+        border:none;
+        color:#BDBDBD;
+        background-color: #FFFFFF;
+        padding-bottom:10px;
+        padding-left: 0;
+        padding-right: 0;
+        margin-right: 15px;
+        border-radius:0px;
+        font-size:16px;
+        line-height: 24px;
+        font-family: 'Poppins', sans-serif;
+        font-weigth:600;
+      }
+      &-button:hover{
+        border:none;
+        background-color: #FFFFFF;
+        padding-bottom:10px;
+        padding-left: 0;
+        padding-right: 0;
+        margin-right: 15px;
+        border-radius:0px;
+        font-size:16px;
+        line-height: 24px;
+        font-family: 'Poppins', sans-serif;
+        font-weigth:600;
+        color:#BDBDBD
+
+      }
     }
   }
 
@@ -25,7 +65,7 @@
     height:100%;
     max-width: 80vw;
     margin:0 auto;
-    padding:170px 0 1em 0;
+    padding:150px 0 1em 0;
 
     &-cards{
       display: grid;
@@ -36,4 +76,71 @@
 
     }
   }
+}
+
+
+.active-button-sort{
+  background-color: #EF5734;
+  color:white;
+  border-color: #EF5734;
+}
+
+.active-button-sort:hover{
+  background-color: #EF5734;
+  color:white;
+  border-color: #EF5734;
+}
+.active-button-sort:focus{
+  background-color: #EF5734;
+  color:white;
+  border-color: #EF5734;
+  box-shadow: none;
+}
+
+.not-active-button-sort{
+  background-color: #FFFFFF;
+  color:#898989;
+  border-color: #EAEAEA;
+}
+
+.not-active-button-sort:hover{
+  background-color: #f0f2f5;
+  color:#898989;
+  border-color: #EAEAEA;
+}
+
+.not-active-button-sort:focus{
+  background-color: #f0f2f5;
+  color:#898989;
+  border-color: #EAEAEA;
+  box-shadow: none;
+}
+
+
+.category-active{
+  border-bottom: 2px solid #EF5734;
+  box-shadow: none;
+  background-color:white;
+  color:#EF5734
+}
+
+.category-active:hover{
+  border-bottom: 2px solid #EF5734;
+  box-shadow: none;
+  background-color:white;
+  color:#EF5734
+}
+
+.category-active:focus{
+  border-bottom: 2px solid #EF5734;
+  box-shadow: none;
+  background-color:white;
+  color:#EF5734
+}
+
+.category-active:active{
+  border-bottom: 2px solid #EF5734;
+  box-shadow: none;
+  background-color:white;
+  color:#EF5734
 }
