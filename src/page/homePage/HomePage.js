@@ -120,7 +120,7 @@ const HomePage = (props) => {
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search form-input-portion" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()} data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
@@ -257,7 +257,7 @@ const HomePage = (props) => {
       },
     ]
 
-    return sortButton.map(item => {return <Button className={renderStyleActiveSort(item.code)} style={{margin:'0 10px'}} onClick={() =>handleSort(item.code)}>
+    return sortButton.map(item => {return <Button className={renderStyleActiveSort(item.code)} data-cy={item.dataCy} style={{margin:'0 10px'}} onClick={() =>handleSort(item.code)}>
       {item.name}
     </Button>})
   }
