@@ -9,6 +9,8 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import {loginUser } from "../../apis/login";
 import TokenService from './../../apis/auth/token';
+import { useNavigate } from 'react-router-dom';
+
 
 
 
@@ -19,6 +21,8 @@ const Login = () => {
   const [invalidEmailCount, setInvalidEmailCount] = useState([])
   const [invalidCountWarning, setInvalidCountWarning] = useState(false)
   const [isStillCantLogin, setIsStillCantLogin] = useState(false)
+  let navigate = useNavigate()
+
 
   const schema = yup.object().shape({
     email: yup.string().email('Format Email tidak sesuai').required('Required'),
@@ -73,6 +77,7 @@ const Login = () => {
       setIsStillCantLogin(false)
       setInvalidData(false)
       setInvalidCountWarning(false)
+      navigate('/code-food-homepage')
     }catch(e){
       setIsStillCantLogin(false)
       setInvalidData(true)
@@ -129,6 +134,10 @@ const Login = () => {
         invalidEmailCount[findIndex].cantLogin = false
       }
     }, 60000)
+  }
+
+  const handleSkipLogin = () =>{
+    navigate('/code-food-homepage')
   }
 
   const renderContent = () =>{
@@ -217,7 +226,7 @@ const Login = () => {
                 </div>
 
                 <div>
-                  <p className={'card-login-skip-text'} data-cy='form-button-skip'>Lewati Login</p>
+                  <p className={'card-login-skip-text'} data-cy='form-button-skip' style={{cursor:'pointer'}} onClick={() => handleSkipLogin()}>Lewati Login</p>
                 </div>
               </Card>
             </Col>

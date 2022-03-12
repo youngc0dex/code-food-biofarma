@@ -8,6 +8,7 @@ import {
 import 'antd/dist/antd.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './page/loginPage/login'
+import Homepage from './page/homePage/HomePage'
 import './index.css'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
     <Router>
         <Routes >
           <Route path='/' element={<Login/>} />
+          <Route path='/code-food-homepage' element ={<Homepage/>}/>
         </Routes >
     </Router>
   );

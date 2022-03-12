@@ -1,0 +1,17 @@
+.homepage{
+  background-color: #E5E5E5;
+  min-height: 100vh;
+
+  &-header{
+    background-color: white;
+    &-wrapper{
+      max-width: 80vw;
+      height: 100px;
+      margin: auto;
+      display: block;
+    }
+  }
+
+  &-body{
+  }
+}
