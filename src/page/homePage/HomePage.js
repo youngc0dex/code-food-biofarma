@@ -63,6 +63,12 @@ const HomePage = (props) => {
     </div>
   }
 
+  const renderSpinner = () =>{
+    return <div style={{display:'flex',alignItems:'center', justifyContent:'center', height:'100%'}}>
+      <Spinner animation="grow" />
+    </div>
+  }
+
 
   return (
     <div className={'homepage'}>
@@ -70,7 +76,7 @@ const HomePage = (props) => {
         {renderHeader()}
       </div>
       <div className={'homepage-body'}>
-          <Spinner animation="grow" style={{textAlign:'center'}}/>
+        {load ? renderSpinner() : handleRenderContent()}
       </div>
     </div>
   );

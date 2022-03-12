@@ -1,6 +1,11 @@
+#root{
+  height:100%
+}
+
 .homepage{
   background-color: #E5E5E5;
-  min-height: 100vh;
+  overflow: hidden;
+  height: 100%;
 
   &-header{
     background-color: white;
@@ -13,5 +18,6 @@
   }
 
   &-body{
+    height:100%;
   }
 }
