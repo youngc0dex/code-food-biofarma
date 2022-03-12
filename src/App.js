@@ -14,7 +14,7 @@ import './index.css'
 function App() {
   return (
     <Router>
-        <Routes >
+        <Routes basename={'/code-food'}>
           <Route exact path='/' element={<Login/>} />
           <Route path='/code-food-homepage' element ={<Homepage/>}/>
         </Routes >
