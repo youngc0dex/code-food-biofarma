@@ -1,24 +1,34 @@
 import React, {useState, useEffect} from "react";
 // import { useHistory } from "react-router-dom";
 import './HomePage.scss'
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
+import {message} from 'antd'
 import HeaderLogo from '../../assets/logo/header-logo.png'
 import HistoryPNG from '../../assets/others/historyPNG.png'
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
+import {getRecipes} from "../../apis/food";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
+  const [load, setLoad] = useState(false)
   let navigate = useNavigate()
 
-
-
   useEffect(() => {
-
-  });
+    getFoodData()
+  }, []);
 
   const getFoodData = async() =>{
-
+    setLoad(true)
+    try{
+      let response = await getRecipes()
+      let recipeData = response.data.data
+      setFoodData(recipeData)
+      setLoad(false)
+    }catch(e){
+      message.error('Error when fetching recipes data')
+      setLoad(false)
+    }
   }
 
   const handleNavigateToHomePage = () =>{
@@ -60,6 +70,7 @@ const HomePage = (props) => {
         {renderHeader()}
       </div>
       <div className={'homepage-body'}>
+          <Spinner animation="grow" style={{textAlign:'center'}}/>
       </div>
     </div>
   );
