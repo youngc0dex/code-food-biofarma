@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "./static/css/main.ab835290.css",
-    "main.js": "./static/js/main.9cf97aa7.js",
-    "static/js/787.9cd59d0f.chunk.js": "./static/js/787.9cd59d0f.chunk.js",
-    "static/media/empty.png": "./static/media/empty.982b65558f29358c50db.png",
-    "static/media/content-logo.png": "./static/media/content-logo.12805a303d8406923039.png",
-    "index.html": "./index.html",
-    "main.ab835290.css.map": "./static/css/main.ab835290.css.map",
-    "main.9cf97aa7.js.map": "./static/js/main.9cf97aa7.js.map",
-    "787.9cd59d0f.chunk.js.map": "./static/js/787.9cd59d0f.chunk.js.map"
+    "main.css": "/https//youngc0dex.github.io/code-food-biofarma/static/css/main.ab835290.css",
+    "main.js": "/https//youngc0dex.github.io/code-food-biofarma/static/js/main.ffd7f234.js",
+    "static/js/787.9cd59d0f.chunk.js": "/https//youngc0dex.github.io/code-food-biofarma/static/js/787.9cd59d0f.chunk.js",
+    "static/media/empty.png": "/https//youngc0dex.github.io/code-food-biofarma/static/media/empty.982b65558f29358c50db.png",
+    "static/media/content-logo.png": "/https//youngc0dex.github.io/code-food-biofarma/static/media/content-logo.12805a303d8406923039.png",
+    "index.html": "/https//youngc0dex.github.io/code-food-biofarma/index.html",
+    "main.ab835290.css.map": "/https//youngc0dex.github.io/code-food-biofarma/static/css/main.ab835290.css.map",
+    "main.ffd7f234.js.map": "/https//youngc0dex.github.io/code-food-biofarma/static/js/main.ffd7f234.js.map",
+    "787.9cd59d0f.chunk.js.map": "/https//youngc0dex.github.io/code-food-biofarma/static/js/787.9cd59d0f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ab835290.css",
-    "static/js/main.9cf97aa7.js"
+    "static/js/main.ffd7f234.js"
   ]
 }
