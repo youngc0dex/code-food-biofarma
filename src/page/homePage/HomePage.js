@@ -120,7 +120,9 @@ const HomePage = (props) => {
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search form-input-portion" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <form data-cy="form-input-portion">
+              <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            </form>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()} data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
@@ -132,7 +134,9 @@ const HomePage = (props) => {
           </div>
         </Col>
       </Row>
-      {handleRenderCategoryButton()}
+      <div>
+        {handleRenderCategoryButton()}
+      </div>
     </div>
   }
 
@@ -144,7 +148,7 @@ const HomePage = (props) => {
 
   const renderCategoryButton = (item, index) =>{
     return <div className={'homepage-header-category'}>
-      <Button data-cy={"category-button-"+index}className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}data-cy={'category-button' + index}>{item.name}</Button>
+      <Button data-cy={"category-button-"+index} className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
   }
 
