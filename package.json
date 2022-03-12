@@ -2,7 +2,7 @@
   "name": "code-food",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://youngc0dex.github.io/",
+  "homepage": "https://youngc0dex.github.io/code-food/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
