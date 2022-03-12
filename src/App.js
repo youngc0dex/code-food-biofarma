@@ -13,7 +13,7 @@ import './index.css'
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
         <Routes >
           <Route path='/' element={<Login/>} />
           <Route path='/code-food-homepage' element ={<Homepage/>}/>
