@@ -7,15 +7,12 @@ import HeaderLogo from '../../assets/logo/header-logo.png'
 import HistoryPNG from '../../assets/others/historyPNG.png'
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
-import {getCategoryFood, getRecipes} from "../../apis/food";
+import {getCategoryFood, getFilteredRecipes, getRecipes, getSortedRecipeDataBySortName} from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
-  const [categoryFoodData, setCategoryFoodData] = useState([{
-    id: 0,
-    name: 'Semua',
-  }])
+  const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
   const [currentSort, setCurrentSort] = useState('new')
   const [currentCategory, setCurrentCategory] = useState(0)
@@ -43,7 +40,12 @@ const HomePage = (props) => {
     try{
       let response = await getCategoryFood()
       let categoryData = response.data.data
-      setCategoryFoodData(categoryData)
+      let allData = [{
+        id: 0,
+        name: 'Semua',
+      }]
+      let newArray = allData.concat(categoryData)
+      setCategoryFoodData(newArray)
     }catch(e){
       message.error('Error when fetching category data')
     }
@@ -95,8 +97,19 @@ const HomePage = (props) => {
     return 'category-non-active'
   }
 
-  const handleSortCategory =(id) =>{
+  const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
+    setCurrentSort('new')
+    setLoad(true)
+    try{
+      let response = await getFilteredRecipes(id)
+      let foodData = response.data.data
+      setFoodData(foodData)
+      setLoad(false)
+    }catch(e){
+      message.error('Error fetching filter data')
+      setLoad(false)
+    }
   }
 
   const handleRenderContent = () =>{
@@ -114,8 +127,24 @@ const HomePage = (props) => {
     </div>
   }
 
-  const handleSort = (sortBy) =>{
+  const handleSort = async(sortBy) =>{
     setCurrentSort(sortBy)
+    if(sortBy == 'new'){
+      getFoodData()
+      return
+    }
+    setLoad(true)
+    try{
+      let response = await getSortedRecipeDataBySortName(sortBy)
+      let newCategoriesData = response.data.data
+      setFoodData(newCategoriesData)
+      setLoad(false)
+
+    }catch(e){
+      message.error('Error fetching sorted data')
+      setLoad(false)
+
+    }
   }
 
   const renderStyleActiveSort = (code) =>{
@@ -133,17 +162,16 @@ const HomePage = (props) => {
         dataCy:'button-sort-latest'
       },{
         name:'Urutkan A-Z',
-        code:'asc',
+        code:'name_asc',
         dataCy:'button-sort-az'
       },{
         name:'Urutkan Z-A',
-        code:'desc',
+        code:'name_desc',
         dataCy:'button-sort-za'
       },{
         name:'Urutkan Dari Paling Disukai',
-        code:'liked',
+        code:'like_desc',
         dataCy:'button-sort-favorite'
-
       },
     ]
 

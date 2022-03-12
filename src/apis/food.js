@@ -8,3 +8,11 @@ export const getRecipes = () =>{
 export const getCategoryFood = () =>{
   return axios.get(API_BASE_URL + '/recipe-categories')
 }
+
+export const getSortedRecipeDataBySortName = (name) =>{
+  return axios.get(API_BASE_URL +'/recipes?sort=' + name)
+}
+
+export const getFilteredRecipes = (id) =>{
+  return axios.get(API_BASE_URL +'/recipes?categoryId='+id)
+}
