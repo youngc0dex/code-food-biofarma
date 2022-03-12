@@ -11,10 +11,10 @@ const FoodCard = (props) => {
   return (
     <div className={'card-component'} data-cy={'list-item-'+index}>
       <Card style={{ width: '264px', height:'333px', borderRadius:'6px' }}>
-        <Card.Img style={{width:'100%', height:'182px'}}variant="top" src={recipe.image} />
+        <Card.Img style={{width:'100%', height:'182px'}}variant="top" src={recipe.image} data-cy={'list-item-image'}/>
         <Card.Body>
-          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}}>{recipe.name}</Card.Title>
-          <Card.Text style={{fontSize:'14px', color:'#828282', fontFamily:'Poppins',fontWeight:'400',font:'Poppins'}}>
+          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} data-cy='list-item-text-title'>{recipe.name}</Card.Title>
+          <Card.Text style={{fontSize:'14px', color:'#828282', fontFamily:'Poppins',fontWeight:'400',font:'Poppins'}} data-cy={'list-item-text-category'}>
             {recipe.recipeCategory.name}
           </Card.Text>
           <Row>
