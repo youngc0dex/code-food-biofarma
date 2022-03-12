@@ -13,9 +13,9 @@ import './index.css'
 
 function App() {
   return (
-    <Router>
-        <Routes basename={process.env.PUBLIC_URL}>
-          <Route path='/' element={<Login/>} />
+    <Router basename={process.env.PUBLIC_URL}>
+        <Routes>
+          <Route exact path='/' element={<Login/>} />
           <Route path='/code-food-homepage' element ={<Homepage/>}/>
         </Routes >
     </Router>
