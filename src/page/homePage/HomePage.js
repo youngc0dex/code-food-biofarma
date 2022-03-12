@@ -115,14 +115,14 @@ const HomePage = (props) => {
       <Row style={{height:'65%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <img src={HeaderLogo} data-cy={"header-logo"} onClick={() => handleNavigateLogin()} style={{cursor:'pointer'}}/>
+            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}}/>
           </div>
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy={"header-input-search"} onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
-              : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()} data-cy={"header-button-search"}>Cari</Button>
+              : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()} data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
           </div>
         </Col>
@@ -144,7 +144,7 @@ const HomePage = (props) => {
 
   const renderCategoryButton = (item, index) =>{
     return <div className={'homepage-header-category'}>
-      <Button className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}data-cy={'category-button' + index}>{item.name}</Button>
+      <Button data-cy={"category-button-"+index}className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}data-cy={'category-button' + index}>{item.name}</Button>
     </div>
   }
 
