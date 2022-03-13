@@ -45,13 +45,14 @@ const HistoryPage = (props) => {
     navigate('/rating/'+serveId)
   }
 
-  const getHistoryData = async(searchQueries, currentSorts, currentStatuses) =>{
+  const getHistoryData = async(searchQueries, currentSorts, currentStatuses, currentCategories) =>{
     let sq = searchQueries ? searchQueries : searchQuery;
     let cs = currentSorts ? currentSorts : currentSort;
     let cst = currentStatuses ? currentStatuses :currentStatus
+    let cctg = currentCategories ? currentCategories : currentCategory;
 
     try{
-      let response = await getRecipeHistoryData(sq,cs,cst)
+      let response = await getRecipeHistoryData(sq,cs,cst,cctg)
       let responseData = response.data.data.history
       setHistoryData(responseData)
     }catch(e){
@@ -74,6 +75,7 @@ const HistoryPage = (props) => {
         id: newArray.length -1,
         name:'Selesai_Dimasak',
         type:'dropdown',
+        dataCy:'category-button-status',
         data:[
           {
             title:'Selesai_Dimasak',
@@ -137,7 +139,7 @@ const HistoryPage = (props) => {
     return <div className={'historypage-header-wrapper'}>
       <div style={{display:'flex', marginBottom:'1em'}}>
         <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
-        <p style={{marginLeft:'1em', fontSize:'26px', fontWeight:'bolder',fontFamily:'Poppins', margin:'auto 0'}}>Riwayat</p>
+        <p data-cy={'header-text-title'} style={{marginLeft:'1em', fontSize:'26px', fontWeight:'bolder',fontFamily:'Poppins', margin:'auto 0'}}>Riwayat</p>
       </div>
       <Row style={{height:'100%'}}>
         <Col style={{margin:'auto'}}>
@@ -186,7 +188,7 @@ const HistoryPage = (props) => {
   const renderCategoryButton = (item, index) =>{
     if(item.type == 'dropdown'){
      return <div>
-        <Button  className={'historypage-header-category-button'} onClick={() =>setShowModal(!showModal)} data-cy={"category-button-"+index}>{item.name.split('_').join(' ')} ^</Button>
+        <Button  className={'historypage-header-category-button'} onClick={() =>setShowModal(!showModal)} data-cy={"category-button-status"}>{item.name.split('_').join(' ')} ^</Button>
         <div>
           {showModal ? renderListButton(item.data,index) : ''}
         </div>
@@ -217,25 +219,15 @@ const HistoryPage = (props) => {
   }
 
   const handleSortCategory =async(id) =>{
-    setCurrentCategory(id)
-    setCurrentSort('newest')
-    if(searchQuery){
-      if(id == 0){
-        handleSearchRecipe()
-        return
-      }
-      handleSearchRecipeByCategory(id)
-      return
-    }
     setLoad(true)
-    try{
-      let response = await getFilteredRecipes(id)
-      let foodData = response.data.data
+   try{
+      await getHistoryData('','','',id)
+      setCurrentCategory(id)
       setLoad(false)
-    }catch(e){
-      message.error('Error fetching filter data')
-      setLoad(false)
-    }
+   }catch(e){
+     setLoad(false)
+     return message.error('Error fetching data')
+   }
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
