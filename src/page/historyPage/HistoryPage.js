@@ -99,7 +99,7 @@ const HistoryPage = (props) => {
   const handleSearchRecipe =async() =>{
     setLoad(true)
     try{
-      await getHistoryData('','','')
+      await getHistoryData('','','','')
       setSuggestion([])
       setLoad(false)
     }catch(e){
@@ -111,7 +111,7 @@ const HistoryPage = (props) => {
   const handleClearQuery = () =>{
     setSuggestion([])
     setSearchQuery('')
-    getHistoryData(' ','','')
+    getHistoryData(' ','','','')
   }
 
   const handleClickSuggestion = (item) =>{
@@ -165,7 +165,7 @@ const HistoryPage = (props) => {
 
   const handleModalClick = async(code, index, title) =>{
     try{
-      await getHistoryData('','', code)
+      await getHistoryData('','', code,'')
       categoryFoodData[index].name = title
       setShowModal(false)
     }catch(e){
@@ -244,7 +244,7 @@ const HistoryPage = (props) => {
   const handleSort = async(sortBy) =>{
     setLoad(true)
     try{
-      await getHistoryData('',sortBy,'')
+      await getHistoryData('',sortBy,'','')
       setCurrentSort(sortBy)
       setLoad(false)
     }catch(e){
