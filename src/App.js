@@ -17,8 +17,8 @@ import './index.css'
 import HistoryPage from "./page/historyPage/HistoryPage";
 function App(props) {
   return (
-    // <Router basename={process.env.PUBLIC_URL}>
-    <Router >
+    <Router basename={process.env.PUBLIC_URL}>
+    {/*<Router >*/}
       <Routes>
           <Route exact path='/' element={<Homepage/>} />
           <Route path='/login' element ={<Login/>}/>
