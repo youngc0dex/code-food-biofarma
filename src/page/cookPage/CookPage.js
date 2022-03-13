@@ -17,7 +17,7 @@ import {
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
   getSortedRecipeDataBySortName,
-  getRecipeCookSteps, postCookProgress, updateCookProgress
+  getRecipeCookSteps, postCookProgress, updateCookProgress, getServeHistories
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Steps } from 'antd';
@@ -39,6 +39,7 @@ const CookPage = (props) => {
   const [recipeCook, setRecipeCook] =useState([])
   const [currentCookId, setCurrentCookId] = useState('')
   let navigate = useNavigate()
+  let serveId = useParams().serveId
 
   useEffect(() => {
     getFoodData()
@@ -73,6 +74,17 @@ const CookPage = (props) => {
 
 
   const getRecipeStepsData = async() =>{
+    if(serveId){
+      try{
+        let response = await getServeHistories(serveId)
+        let recipeData = response.data.data.steps
+        setRecipeCook(recipeData)
+        setCurrentCookId(serveId)
+      }catch(e){
+        message.error('Error fetching steps data')
+      }
+      return
+    }
     try{
       let response = await getRecipeCookSteps(recipeId)
       let recipeData = response.data.data
@@ -268,7 +280,6 @@ const CookPage = (props) => {
   const handleServeFood = async() =>{
     navigate('/rating/' + currentCookId)
   }
-
 
   const handleDescription = (item,current,index) =>{
     return <div>

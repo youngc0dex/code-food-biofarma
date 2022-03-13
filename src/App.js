@@ -26,6 +26,8 @@ function App(props) {
           <Route path='/cook/:id/:nServe' element ={<CookPage/>}/>
           <Route path='/rating/:id' element ={<RatingPage/>}/>
          <Route path='/history' element ={<HistoryPage/>}/>
+         <Route path='/cook/:id/:nServe/:serveId' element ={<CookPage/>}/>
+
       </Routes >
     </Router>
   );

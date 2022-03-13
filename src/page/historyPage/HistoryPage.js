@@ -1,15 +1,10 @@
 import React, {useState, useEffect} from "react";
 // import { useHistory } from "react-router-dom";
 import './HistoryPage.scss'
-import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
+import {Button, Col, Card, Row, Spinner} from "react-bootstrap";
 import {message} from 'antd'
-import HeaderLogo from '../../assets/logo/header-logo.png'
-import HistoryPNG from '../../assets/others/historyPNG.png'
-import empty from '../../assets/others/empty.png'
 import clear from '../../assets/others/x-button.png'
 import Back from '../../assets/others/back-button.png'
-
-
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
 import {
@@ -20,16 +15,21 @@ import {
   getSortedRecipeDataBySortName, searchRecipeQuery
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
+import { Select } from 'antd';
+
+const { Option } = Select;
 
 const HistoryPage = (props) => {
   const [historyData, setHistoryData] = useState([])
   const [masterHistoryData, setMasterHistoryData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
-  const [currentSort, setCurrentSort] = useState('new')
+  const [currentSort, setCurrentSort] = useState('newest')
   const [currentCategory, setCurrentCategory] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentStatus,setCurrentStatus] = useState('')
   const [suggestion, setSuggestion] = useState([])
+  const [showModal, setShowModal] = useState(false)
   let navigate = useNavigate()
 
   useEffect(() => {
@@ -37,11 +37,22 @@ const HistoryPage = (props) => {
     getHistoryData()
   }, []);
 
-  const getHistoryData = async() =>{
+  const navigateToCookDetail = (recipeId, serving,serveId) =>{
+    navigate('/cook/'+recipeId+'/'+serving+'/'+serveId)
+  }
+
+  const navigateToRatingDetail = (serveId) =>{
+    navigate('/rating/'+serveId)
+  }
+
+  const getHistoryData = async(searchQueries, currentSorts, currentStatuses) =>{
+    let sq = searchQueries ? searchQueries : searchQuery;
+    let cs = currentSorts ? currentSorts : currentSort;
+    let cst = currentStatuses ? currentStatuses :currentStatus
+
     try{
-      let response = await getRecipeHistoryData()
+      let response = await getRecipeHistoryData(sq,cs,cst)
       let responseData = response.data.data.history
-      console.log(responseData, ' in i')
       setHistoryData(responseData)
     }catch(e){
       message.error('Error fetching history data')
@@ -55,8 +66,28 @@ const HistoryPage = (props) => {
       let allData = [{
         id: 0,
         name: 'Semua',
+        type:'normal'
       }]
       let newArray = allData.concat(categoryData)
+
+      let dropDownData = {
+        id: newArray.length -1,
+        name:'Selesai_Dimasak',
+        type:'dropdown',
+        data:[
+          {
+            title:'Selesai_Dimasak',
+            code:'done',
+            dataCy:'category-button-status-done'
+          },{
+            title:'Dalam_Progress',
+            code:'progress',
+            dataCy:'category-button-status-progress'
+          },
+        ]
+      }
+
+      newArray.push(dropDownData)
       setCategoryFoodData(newArray)
     }catch(e){
       message.error('Error when fetching category data')
@@ -64,22 +95,25 @@ const HistoryPage = (props) => {
   }
 
   const handleSearchRecipe =async() =>{
+    setLoad(true)
     try{
-      let response = await getSearchedRecipe(searchQuery)
-      let responseData = response.data.data
+      await getHistoryData('','','')
       setSuggestion([])
+      setLoad(false)
     }catch(e){
+      setLoad(true)
       return message.error('Error when fetching searched recipe')
     }
   }
 
   const handleClearQuery = () =>{
-    setSearchQuery('')
     setSuggestion([])
+    setSearchQuery('')
+    getHistoryData(' ','','')
   }
 
   const handleClickSuggestion = (item) =>{
-    navigate('/recipe/' +item.id)
+    navigate('/recipe/' +item.recipeId)
   }
 
   const renderSuggestionBox = () =>{
@@ -87,7 +121,7 @@ const HistoryPage = (props) => {
       return <div className={'suggestion-box'} data-cy={'search-suggestion-container'}>
         {suggestion.map((item,index) =>{
           return <div style={{padding: '0.5em', cursor:'pointer'}} data-cy={'search-suggestion-'+index}onClick={() =>handleClickSuggestion(item)}>
-            <p style={{marginBottom:'0'}}>{item.name}</p>
+            <p style={{marginBottom:'0'}}>{item.recipeName}</p>
           </div>})}
       </div>
     }
@@ -127,7 +161,37 @@ const HistoryPage = (props) => {
     </div>
   }
 
+  const handleModalClick = async(code, index, title) =>{
+    try{
+      await getHistoryData('','', code)
+      categoryFoodData[index].name = title
+      setShowModal(false)
+    }catch(e){
+      return message.error('Error sort data')
+    }
+  }
+
+  const renderListButton = (data,index) =>{
+    if(data && data.length > 0){
+      return <Card style={{position:'absolute', transform:'translateY(10px)'}}>
+        <Card.Body style={{padding:'.3rem 1rem'}}>
+          {data.map(item => {
+            return <p style={{cursor:'pointer', margin:'10px 0'}} data-cy={item.dataCy} onClick={() => handleModalClick(item.code,index, item.title)}>{item.title.split('_').join(' ')}</p>
+          })}
+        </Card.Body>
+      </Card>
+    }
+  }
+
   const renderCategoryButton = (item, index) =>{
+    if(item.type == 'dropdown'){
+     return <div>
+        <Button  className={'historypage-header-category-button'} onClick={() =>setShowModal(!showModal)} data-cy={"category-button-"+index}>{item.name.split('_').join(' ')} ^</Button>
+        <div>
+          {showModal ? renderListButton(item.data,index) : ''}
+        </div>
+      </div>
+    }
     return <div className={'historypage-header-category'}>
       <Button data-cy={"category-button-"+index} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
@@ -154,7 +218,7 @@ const HistoryPage = (props) => {
 
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
-    setCurrentSort('new')
+    setCurrentSort('newest')
     if(searchQuery){
       if(id == 0){
         handleSearchRecipe()
@@ -186,21 +250,14 @@ const HistoryPage = (props) => {
   }
 
   const handleSort = async(sortBy) =>{
-    setCurrentSort(sortBy)
-    if(sortBy == 'new'){
-      getHistoryData()
-      return
-    }
     setLoad(true)
     try{
-      let response = await getSortedRecipeDataBySortName(sortBy)
-      let newCategoriesData = response.data.data
+      await getHistoryData('',sortBy,'')
+      setCurrentSort(sortBy)
       setLoad(false)
-
     }catch(e){
       message.error('Error fetching sorted data')
       setLoad(false)
-
     }
   }
 
@@ -215,20 +272,20 @@ const HistoryPage = (props) => {
     let sortButton =[
       {
         name:'Terbaru',
-        code:'new',
-        dataCy:'button-sort-latest'
+        code:'newest',
+        dataCy:'button-sort-newest'
       },{
-        name:'Urutkan A-Z',
-        code:'name_asc',
-        dataCy:'button-sort-az'
+        name:'Terlama',
+        code:'oldest',
+        dataCy:'button-sort-oldest'
       },{
-        name:'Urutkan Z-A',
-        code:'name_desc',
-        dataCy:'button-sort-za'
+        name:'Porsi Terbanyak',
+        code:'nserve_desc',
+        dataCy:'button-sort-most'
       },{
-        name:'Urutkan Dari Paling Disukai',
-        code:'like_desc',
-        dataCy:'button-sort-favorite'
+        name:'Porsi Tersedikit',
+        code:'nserve_asc',
+        dataCy:'button-sort-least'
       },
     ]
 
@@ -241,8 +298,8 @@ const HistoryPage = (props) => {
   const handleInputSearch = async(query) =>{
     setSearchQuery(query)
     if(query.length > 1){
-      let response = await searchRecipeQuery(query)
-      let responseData = response.data.data
+      let response = await getRecipeHistoryData(query,currentSort,currentStatus)
+      let responseData = response.data.data.history
       setSuggestion(responseData)
       return
     }
@@ -251,8 +308,8 @@ const HistoryPage = (props) => {
 
   const handleRenderContent = () =>{
     if(historyData && historyData.length > 0){
-      return historyData.map(item => {
-        return <div style={{marginBottom: '1em'}}><FoodCard recipe={item} type={'history'}/></div>
+      return historyData.map((item,index) => {
+        return <div style={{marginBottom: '1em'}}><FoodCard navigateToRatingDetail ={(a) =>navigateToRatingDetail(a) } navigateToCookDetail = {(a,b,c) => navigateToCookDetail(a,b,c)}index={index} recipe={item} type={'history'}/></div>
       })
     }
   }

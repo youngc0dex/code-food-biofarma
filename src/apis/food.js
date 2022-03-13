@@ -51,6 +51,11 @@ export const searchRecipeQuery = (q) =>{
   return axios.get(API_BASE_URL + '/search/recipes?limit&q=' + q)
 }
 
-export const getRecipeHistoryData = () =>{
-  return axios.get(API_BASE_URL + '/serve-histories', {headers: TokenService.getheader()})
+export const getRecipeHistoryData = (searchQuery,sort,status) =>{
+  return axios.get(API_BASE_URL + `/serve-histories?q=${searchQuery}&sort=${sort}&status=${status}`,
+    {headers: TokenService.getheader()})
+}
+
+export const getServeHistories = (id) =>{
+  return axios.get(API_BASE_URL +'/serve-histories/' + id, {headers: TokenService.getheader()})
 }

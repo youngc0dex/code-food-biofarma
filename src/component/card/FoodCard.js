@@ -13,7 +13,7 @@ import Moment from "react-moment";
 
 
 const FoodCard = (props) => {
-  const {recipe,index,type, handleNavigateToRecipeDetail, redirectBack} = props
+  const {recipe,index,type, handleNavigateToRecipeDetail, redirectBack,navigateToRatingDetail, navigateToCookDetail} = props
 
 
   const handleRenderCard =() =>{
@@ -134,24 +134,26 @@ const FoodCard = (props) => {
   }
 
   const handleRenderHistoryCard = () =>{
-    return <Card style={{height:'245px', borderRadius:'6px' }}>
+    return <Card style={{height:'245px', borderRadius:'6px' }} data-cy={'history-item-'+index}>
       <Card.Body>
-        <Card.Title style={{fontSize:'12px',lineHeight:'27px', fontFamily:'Poppins'}} ><Moment format="DD MMMM YYYY">
+        <Card.Title style={{fontSize:'12px',lineHeight:'27px', fontFamily:'Poppins'}} >
+          <Moment format="DD MMMM YYYY" data-cy={'history-item-text-date'}>
           {recipe.createdAt}
-        </Moment></Card.Title>
+          </Moment>
+        </Card.Title>
         <Card.Text>
           <div style={{display:'flex', width:'100%'}}>
             <div>
-              <img style={{width:'111px', height:'111px', objectFit:'cover',  borderRadius:'6px'}} src={recipe.recipeImage}/>
+              <img data-cy={'history-item-image'} style={{width:'111px', height:'111px', objectFit:'cover',  borderRadius:'6px'}} src={recipe.recipeImage}/>
             </div>
 
             <div style={{width:'100%',margin:'0 1em'}}>
-              <p style={{fontWeight:'bold', fontFamily:'Poppins'}}>{recipe.recipeName}</p>
-              <p style={{color:'#898989',fontFamily:'Poppins'}}>{recipe.id}</p>
+              <p style={{fontWeight:'bold', fontFamily:'Poppins'}} data-cy={'history-item-text-title'}>{recipe.recipeName}</p>
+              <p style={{color:'#898989',fontFamily:'Poppins'}} data-cy={'history-item-text-code'}>{recipe.id}</p>
 
               <div style={{justifyContent:'space-between', display:'flex'}}>
-                <p style={{color:'#898989',fontFamily:'Poppins'}}>{recipe.recipeCategoryName}</p>
-                <p>Porsi: <span style={{fontWeight:'bold'}}>{recipe.nServing}</span></p>
+                <p style={{color:'#898989',fontFamily:'Poppins'}} data-cy={'history-item-text-category'}>{recipe.recipeCategoryName}</p>
+                <p data-cy={'history-item-text-portion'}>Porsi: <span style={{fontWeight:'bold'}}>{recipe.nServing}</span></p>
               </div>
             </div>
           </div>
@@ -174,35 +176,35 @@ const FoodCard = (props) => {
 
   const handleRenderReaction = (reaction) =>{
     if(reaction == 'like'){
-      return <div style={{display:'flex'}}>
+      return <div style={{display:'flex'}} >
         <img src={LikeImageChosen} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}}>Yummy!</p>
+        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Yummy!</p>
       </div>
     }
 
     if(reaction == 'neutral'){
       return <div style={{display:'flex'}}>
         <img src={NeutralImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}}>Lumayan</p>
+        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Lumayan</p>
       </div>
     }
 
     if(reaction == 'dislike'){
       return <div style={{display:'flex'}}>
         <img src={SadImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}}>Kurang Suka</p>
+        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Kurang Suka</p>
       </div>
     }
 
-    return <p style={{fontFamily:'Poppins'}}>Belum ada penilaian</p>
+    return <p style={{fontFamily:'Poppins',cursor:'pointer'}} onClick={() => navigateToRatingDetail(recipe.id)} data-cy={'history-item-text-rating'}>Belum ada penilaian</p>
   }
 
   const handleRenderPercentation = (stepOfServe, currentServe) =>{
     let percentage = (currentServe / stepOfServe) * 100
     if(percentage == 100){
-      return <p style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
+      return <p data-cy={'history-item-button-status'} style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
     }
-    return <p style={{fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
+    return <p onClick={() =>navigateToCookDetail(recipe.recipeId,recipe.nServing,recipe.id)} data-cy={'history-item-button-status'} style={{cursor:'pointer',fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
   }
 
   return (
