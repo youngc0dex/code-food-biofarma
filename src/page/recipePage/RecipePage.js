@@ -135,7 +135,7 @@ const RecipePage = (props) => {
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-button-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="form-button-submit-portion">Cari</Button>
             {renderSuggestionBox()}
@@ -252,7 +252,7 @@ const RecipePage = (props) => {
 
             <Col>
               <div>
-                <Input type={'number'} disabled={qty < 1} value={qty} data-cy={'form-value-portion'} onChange={(e) => setQty(e.target.value)}/>
+                <Input type={'number'} disabled={qty < 1} value={qty} data-cy={'form-input-portion'} onChange={(e) => setQty(e.target.value)}/>
               </div>
             </Col>
 
@@ -264,7 +264,7 @@ const RecipePage = (props) => {
           </Row>
 
           <div style={{width:'100%', marginTop:'2em'}}>
-            <button className={'start-cooking-button'} data-cy={'form-button-submit-portion'}>Mulai Memasak</button>
+            <button className={'start-cooking-button'} data-cy={'form-button-submit-portion'} onClick={() => navigateToCookPage()}>Mulai Memasak</button>
           </div>
 
         </Card.Body>
@@ -273,6 +273,10 @@ const RecipePage = (props) => {
         {renderFormFailed()}
       </div>
     </div>
+  }
+
+  const navigateToCookPage = () =>{
+    navigate('/cook/'+recipeId)
   }
 
   const renderSpinner = () =>{

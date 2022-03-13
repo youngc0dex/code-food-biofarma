@@ -10,13 +10,14 @@ import clear from '../../assets/others/x-button.png'
 import Cek from '../../assets/others/cek.png'
 
 import {Input} from "antd";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 import {
   getCategoryFood,
   getFilteredRecipes,
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName
+  getSortedRecipeDataBySortName,
+  getRecipeCookSteps
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Steps } from 'antd';
@@ -32,28 +33,14 @@ const CookPage = (props) => {
   const [currentCategory, setCurrentCategory] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
-  const [recipeCook, setRecipeCook] =useState([{
-    title:'ambil bahan',
-    desc:'mengambil bahan',
-    done:false
-  },{
-    title:'ambil bahan 2',
-    desc:'mengambil bahan',
-    done:false
-  },{
-    title:'ambil bahan 3',
-    desc:'mengambil bahan',
-    done:false
-  },{
-    title:'ambil bahan 3',
-    desc:'mengambil bahan',
-    done:false
-  }])
+  const recipeId = useParams().id
+  const [recipeCook, setRecipeCook] =useState([])
   let navigate = useNavigate()
 
   useEffect(() => {
     getFoodData()
     getCategoryFoodData()
+    getRecipeStepsData()
   }, []);
 
 
@@ -94,6 +81,17 @@ const CookPage = (props) => {
       setCategoryFoodData(newArray)
     }catch(e){
       message.error('Error when fetching category data')
+    }
+  }
+
+  const getRecipeStepsData = async() =>{
+    try{
+      let response = await getRecipeCookSteps(recipeId)
+      let recipeData = response.data.data
+      recipeData.map(item => item.done = false)
+      setRecipeCook(recipeData)
+    }catch(e){
+      message.error('Error fetching steps data')
     }
   }
 
@@ -140,7 +138,7 @@ const CookPage = (props) => {
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-button-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="form-button-submit-portion">Cari</Button>
             {renderSuggestionBox()}
@@ -223,7 +221,7 @@ const CookPage = (props) => {
     return <Card>
       <Card.Body>
         <Steps current={current} direction="vertical">
-          { recipeCook.map((item,index) => {return <Step title={"Step "+(index+1)} description={handleDescription(item, current, index)} />})}
+          { recipeCook.map((item,index) => {return <Step data-cy={'item-step'+index} title={"Step "+(index+1)} description={handleDescription(item, current, index)} />})}
         </Steps>
       </Card.Body>
     </Card>
@@ -239,13 +237,14 @@ const CookPage = (props) => {
     if(item.done){
       return <div style={{display:'flex'}}>
         <img src={Cek} style={{width:'12px',height:'12px', margin:'auto 0'}}/>
-        <p style={{marginLeft:'10px',marginBottom:'0',fontFamily:'Poppins', color:'#2BAF2B'}}>Selesai</p>
+        <p data-cy={'text-step-done'} style={{marginLeft:'10px',marginBottom:'0',fontFamily:'Poppins', color:'#2BAF2B'}}>Selesai</p>
       </div>
     }
 
     if(index == recipeCook.length-1){
       return <button
         style={{color:'white',borderRadius:'6px', backgroundColor:'#EF5734', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
+        data-cy={'button-serve'}
       >Sajikan Makanan</button>
     }
 
@@ -257,7 +256,7 @@ const CookPage = (props) => {
 
   const handleDescription = (item,current,index) =>{
     return <div>
-      <p style={{fontWeight:'600'}}>{item.desc}</p>
+      <p style={{fontWeight:'600'}}>{item.description}</p>
       {index <= current ? handleRenderProcessDone(item, index) : ''}
     </div>
   }
@@ -268,25 +267,6 @@ const CookPage = (props) => {
     </div>
   }
 
-  const handleSort = async(sortBy) =>{
-    setCurrentSort(sortBy)
-    if(sortBy == 'new'){
-      getFoodData()
-      return
-    }
-    setLoad(true)
-    try{
-      let response = await getSortedRecipeDataBySortName(sortBy)
-      let newCategoriesData = response.data.data
-      setFoodData(newCategoriesData)
-      setLoad(false)
-
-    }catch(e){
-      message.error('Error fetching sorted data')
-      setLoad(false)
-
-    }
-  }
 
   const handleInputSearch = (query) =>{
     setSearchQuery(query)
