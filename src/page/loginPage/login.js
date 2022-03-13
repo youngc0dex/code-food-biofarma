@@ -96,6 +96,7 @@ const Login = () => {
     };
     const encryptedData = window.btoa(JSON.stringify(obj));
     localStorage.setItem('foodUserData', encryptedData);
+    sessionStorage.setItem('Food-Token', token)
     TokenService.setToken('Food-Token', token);
   }
 

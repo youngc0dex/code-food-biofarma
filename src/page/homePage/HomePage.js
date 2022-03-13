@@ -92,11 +92,12 @@ const HomePage = (props) => {
 
   const handleNavigateHistory = () =>{
     let foodToken = localStorage.getItem('Food-Token')
-    if(!foodToken){
-      navigate('/login')
+    let foodToken2 = sessionStorage.getItem('Food-Token')
+    if(foodToken || foodToken2){
+      navigate('/history')
       return
     }
-    navigate('/history')
+    navigate('/login')
   }
 
   const renderSuggestionBox = () =>{
