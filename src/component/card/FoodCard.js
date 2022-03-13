@@ -27,7 +27,7 @@ const FoodCard = (props) => {
   const handleRenderIngredients = () =>{
     if(recipe.ingredientsPerServing && recipe.ingredientsPerServing.length > 0){
       return recipe.ingredientsPerServing.map(item => {
-        return <p><span style={{fontWeight:'bold', fontFamily:'Poppins'}} data-cy={'detail-text-recipe'}>{item.value} {item.unit}</span> {item.item}</p>
+        return <p data-cy={'detail-text-recipe'}><span style={{fontWeight:'bold', fontFamily:'Poppins'}}>{item.value} {item.unit}</span> {item.item}</p>
       })
     }
     return <h5>Tidak ada cara memasak untuk resep ini</h5>
@@ -73,15 +73,15 @@ const FoodCard = (props) => {
   }
 
   const handleRenderDetailCard = () =>{
-    return <div className={'card-component'} data-cy={'list-item-'+index}>
+    return <div className={'card-component'}>
       <Card style={{borderRadius:'6px' }}>
         <div style={{position:'absolute', transform:'translate(10px,10px)'}}>
           <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
         </div>
-        <Card.Img style={{width:'100%', height:'439px'}}variant="top" src={recipe.image} data-cy={'detail-image'}/>
+        <Card.Img style={{width:'100%', height:'439px'}}variant="top" src={recipe.image} data-cy={'list-item-0'}/>
 
         <Card.Body>
-          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} data-cy='detail-tect-title'>{recipe.name}</Card.Title>
+          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} data-cy='detail-text-title'>{recipe.name}</Card.Title>
           <div style={{display:'flex', flexWrap:'wrap'}}>
               <div style={{display:'flex', alignItems:'center',padding:'2px',borderRadius: '9px',border: '1px solid #EAEAEA', width:'54px'}} data-cy={'detail-like'}>
                 <img src={goodRating} style={{width:'16px', height:'16px'}}/>

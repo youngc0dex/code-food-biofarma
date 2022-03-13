@@ -245,8 +245,8 @@ const RecipePage = (props) => {
           <Card.Title style={{fontSize:'18px',fontWeight:'bold',lineHeight:'27px', fontFamily:'Poppins', marginBottom:'2em'}} data-cy='list-item-text-title'>Jumlah porsi yang dimasak</Card.Title>
           <Row>
             <Col s={'auto'} xs={'auto'} md={'auto'}>
-              <div>
-                <img src={Decrease} style={{width:'22px', height:'22px', cursor:'pointer'}} data-cy={'form-button-decrease-portion'} onClick={() =>handleIncDecBtn('dec')}/>
+              <div data-cy={'form-button-decrease-portion'}>
+                <img src={Decrease} style={{width:'22px', height:'22px', cursor:'pointer'}} onClick={() =>handleIncDecBtn('dec')}/>
               </div>
             </Col>
 
@@ -257,8 +257,8 @@ const RecipePage = (props) => {
             </Col>
 
             <Col s={'auto'} xs={'auto'} md={'auto'}>
-              <div>
-                <img src={Increase} style={{width:'22px', height:'22px', cursor:'pointer'}} data-cy={'form-button-increase-portion'} onClick={() =>handleIncDecBtn('inc')}/>
+              <div data-cy={'form-button-increase-portion'}>
+                <img src={Increase} style={{width:'22px', height:'22px', cursor:'pointer'}} onClick={() =>handleIncDecBtn('inc')}/>
               </div>
             </Col>
           </Row>
@@ -276,7 +276,7 @@ const RecipePage = (props) => {
   }
 
   const navigateToCookPage = () =>{
-    navigate('/cook/'+recipeId)
+    navigate('/cook/'+recipeId+'/'+qty)
   }
 
   const renderSpinner = () =>{

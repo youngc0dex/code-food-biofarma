@@ -8,7 +8,8 @@ export class TokenService {
   }
   static getheader(){
     let headers = {
-      Token: this.getToken()
+      Authorization: `Bearer ${this.getToken()} ENUM`,
+      Token:this.getToken(),
     }
     return headers;
   }

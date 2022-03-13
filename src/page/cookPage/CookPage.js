@@ -17,10 +17,11 @@ import {
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
   getSortedRecipeDataBySortName,
-  getRecipeCookSteps
+  getRecipeCookSteps, postCookProgress, updateCookProgress
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Steps } from 'antd';
+import Back from "../../assets/others/back-button.png";
 
 const { Step } = Steps;
 
@@ -34,7 +35,9 @@ const CookPage = (props) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
   const recipeId = useParams().id
+  const qty  = useParams().nServe
   const [recipeCook, setRecipeCook] =useState([])
+  const [currentCookId, setCurrentCookId] = useState('')
   let navigate = useNavigate()
 
   useEffect(() => {
@@ -215,19 +218,60 @@ const CookPage = (props) => {
     navigate('/recipe/'+id)
   }
 
+  const redirectBack = () =>{
+    navigate('/recipe/'+recipeId)
+  }
+
   const handleRenderContent = () =>{
     let current = recipeCook.findIndex(item => item.done == false)
 
     return <Card>
+      <Card.Title>
+        <div style={{position:'absolute', transform:'translate(10px,10px)'}}>
+          <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
+        </div> <h5 style={{marginLeft:'3em', marginTop:'10px'}}>Langkah Memasak</h5>
+      </Card.Title>
       <Card.Body>
         <Steps current={current} direction="vertical">
           { recipeCook.map((item,index) => {return <Step data-cy={'item-step'+index} title={"Step "+(index+1)} description={handleDescription(item, current, index)} />})}
         </Steps>
+        {renderDoneCookButton()}
       </Card.Body>
     </Card>
   }
 
-  const handleDoneButton = (index) =>{
+  const handleDoneButton = async(index) =>{
+    if(index == 0){
+      try{
+        let payload = {
+          nServing:qty,
+          recipeId:recipeId,
+        }
+
+        let response = await postCookProgress(payload)
+        let responseData = response.data.data
+        setCurrentCookId(responseData.id)
+        updateCookingStep(index)
+        return
+      }catch(e){
+        message.error('Failed to update cooking progress')
+        return
+      }
+    }
+
+    try{
+      let payload = {
+          stepOrder:index + 1
+      }
+      await updateCookProgress(currentCookId, payload)
+      updateCookingStep(index)
+    }catch(e){
+      return message.error('Failed update current steps')
+    }
+  }
+
+
+  const updateCookingStep = (index) =>{
     let cookData= [...recipeCook];
     cookData[index].done = true;
     setRecipeCook(cookData)
@@ -241,19 +285,30 @@ const CookPage = (props) => {
       </div>
     }
 
-    if(index == recipeCook.length-1){
-      return <button
-        style={{color:'white',borderRadius:'6px', backgroundColor:'#EF5734', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
-        data-cy={'button-serve'}
-      >Sajikan Makanan</button>
-    }
-
     return <button
       style={{color:'white',borderRadius:'6px', backgroundColor:'#2BAF2B', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
       onClick={() => handleDoneButton(index)}
       data-cy={'button-step-done'}
     >Selesai</button>
   }
+
+  const renderDoneCookButton = () =>{
+    let checkIfNotDone = recipeCook.find(item => item.done == false)
+    if(checkIfNotDone){
+      return
+    }
+    return <div style={{width:'100%', textAlign:'center'}}><button
+      style={{color:'white',borderRadius:'6px', backgroundColor:'#EF5734', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
+      data-cy={'button-serve'}
+      onClick = {() =>handleServeFood()}
+    >Sajikan Makanan</button>
+    </div>
+  }
+
+  const handleServeFood = async() =>{
+
+  }
+
 
   const handleDescription = (item,current,index) =>{
     return <div>

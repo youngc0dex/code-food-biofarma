@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../constants/defaultValues';
+import TokenService from "./auth/token";
+import token from "./auth/token";
 
 export const getRecipes = () =>{
   return axios.get(API_BASE_URL + '/recipes')
@@ -31,4 +33,12 @@ export const getRecipeDetail = (id) =>{
 
 export const getRecipeCookSteps = (id) =>{
   return axios.get(API_BASE_URL + `/recipes/${id}/steps`)
+}
+
+export const postCookProgress = (payload) =>{
+  return axios.post(API_BASE_URL + `/serve-histories`, payload, {headers: TokenService.getheader()})
+}
+
+export const updateCookProgress = (id,payload) =>{
+  return axios.put(API_BASE_URL+`/serve-histories/${id}/done-step`, payload, {headers: TokenService.getheader()})
 }
