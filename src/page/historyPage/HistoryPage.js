@@ -46,10 +46,10 @@ const HistoryPage = (props) => {
   }
 
   const getHistoryData = async(searchQueries, currentSorts, currentStatuses, currentCategories) =>{
-    let sq = searchQueries ? searchQueries : searchQuery;
-    let cs = currentSorts ? currentSorts : currentSort;
-    let cst = currentStatuses ? currentStatuses :currentStatus
-    let cctg = currentCategories ? currentCategories : currentCategory;
+    let sq = searchQueries ? searchQueries : searchQuery ? searchQuery : '';
+    let cs = currentSorts ? currentSorts : currentSort ? currentSort : ''
+    let cst = currentStatuses ? currentStatuses :currentStatus ? currentStatus : ''
+    let cctg = currentCategories ? currentCategories : currentCategory ? currentCategory : '';
 
     try{
       let response = await getRecipeHistoryData(sq,cs,cst,cctg)
@@ -195,7 +195,7 @@ const HistoryPage = (props) => {
       </div>
     }
     return <div className={'historypage-header-category'}>
-      <Button data-cy={"category-button-"+item.id} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
+      <Button data-cy={"category-button-"+index} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
   }
 
