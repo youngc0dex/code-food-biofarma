@@ -195,7 +195,7 @@ const HistoryPage = (props) => {
       </div>
     }
     return <div className={'historypage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
+      <Button data-cy={"category-button-"+item.id} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
   }
 
@@ -209,7 +209,7 @@ const HistoryPage = (props) => {
   const handleSortCategory =async(id) =>{
     setLoad(true)
    try{
-      await getHistoryData('','','','')
+      await getHistoryData('','','',id)
       setCurrentCategory(id)
       setLoad(false)
    }catch(e){
