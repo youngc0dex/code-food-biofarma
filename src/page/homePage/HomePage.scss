@@ -16,7 +16,7 @@
     z-index: 1000;
     &-wrapper{
       max-width: 80vw;
-      height: 120px;
+      height: 140px;
       margin: auto;
       display: block;
     }
@@ -25,9 +25,9 @@
       &-wrapper{
         display:flex;
         position:absolute;
-        bottom:5px;
+        bottom:2px;
         flex-wrap: wrap;
-        z-index: 1100;
+        z-index: 1300;
       }
 
       &-button{

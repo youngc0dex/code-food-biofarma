@@ -119,8 +119,8 @@ const HomePage = (props) => {
           </div>
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
-          <div data-cy="header-input-search">
-              <Input style={{width:'80%'}} value={searchQuery} data-cy="form-input-portion" onChange={(e) => handleInputSearch(e.target.value)}/>
+          <div>
+              <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="form-button-submit-portion">Cari</Button>
             {renderSuggestionBox()}
@@ -132,7 +132,7 @@ const HomePage = (props) => {
           </div>
         </Col>
       </Row>
-      <div>
+      <div style={{width:'100%', height:'35%'}}>
         {handleRenderCategoryButton()}
       </div>
     </div>

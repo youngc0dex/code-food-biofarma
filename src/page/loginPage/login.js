@@ -21,6 +21,7 @@ const Login = () => {
   const [invalidEmailCount, setInvalidEmailCount] = useState([])
   const [invalidCountWarning, setInvalidCountWarning] = useState(false)
   const [isStillCantLogin, setIsStillCantLogin] = useState(false)
+  const [errorEmailAndPass, setErrorEmailAndPass] = useState(false)
   let navigate = useNavigate()
 
 
@@ -57,8 +58,11 @@ const Login = () => {
   }
 
 
-  const handleSubmit = async(values,isValid) =>{
+  const handleSubmit = async(values,isValid, errors) =>{
+
     if(!isValid) {
+      console.log(errors, ' ini errrors')
+      renderErrorEmailAndPassword(errors)
       return
     }
     if(!stillCantLogin(values.email)){
@@ -140,6 +144,27 @@ const Login = () => {
     navigate('/')
   }
 
+  const renderErrorEmailAndPassword = (error) =>{
+
+    if(error.email){
+      setErrorEmailAndPass(true)
+      return <div style={{display: errorEmailAndPass ? 'block' : 'none'}}>
+        <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
+          <p data-cy="form-alert-text" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>{error.email}</p>
+          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setErrorEmailAndPass(false)}>OK</p>
+        </div>
+      </div>
+    }else if(error.password){
+      setErrorEmailAndPass(true)
+      return <div style={{display: errorEmailAndPass ? 'block' : 'none'}}>
+        <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
+          <p data-cy="form-alert-text" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>{error.password}</p>
+          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setErrorEmailAndPass(false)}>OK</p>
+        </div>
+      </div>
+    }
+  }
+
   const renderContent = () =>{
     return <Formik
       validationSchema={schema}
@@ -166,13 +191,14 @@ const Login = () => {
 
             <Col md={6} lg={6}>
               <Card className={'card-settings'}>
-                <div style={{display: isStillCantLogin ? 'block' : 'none'}}>
+                {errorEmailAndPass ? renderErrorEmailAndPassword(errors) : ''}
+                <div data-cy='form-alert-container' style={{display: isStillCantLogin ? 'block' : 'none'}}>
                   <div style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
                     <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Terlalu banyak percobaan, coba kembali setelah 1 menit</p>
                   </div>
                 </div>
                 <div style={{display: invalidCountWarning ? 'block' : 'none'}}>
-                  <div style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
+                  <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
                     <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Terlalu banyak percobaan, pastikan data Email dan Password anda benar.</p>
                   </div>
                 </div>
@@ -217,7 +243,7 @@ const Login = () => {
 
 
                     <div className={'card-login-btn'}>
-                      <Button className="mt-5" onClick={()=>handleSubmit(values,isValid)} style={{width:'100%'}} data-cy='form-button-login' disabled={isButtonDisabled(values)}>
+                      <Button className="mt-5" onClick={()=>handleSubmit(values,isValid,errors)} style={{width:'100%'}} data-cy='form-button-login' disabled={isButtonDisabled(values)}>
                         Login
                       </Button>
                     </div>
