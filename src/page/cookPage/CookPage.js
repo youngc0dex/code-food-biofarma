@@ -229,7 +229,7 @@ const CookPage = (props) => {
       <Card.Title>
         <div style={{position:'absolute', transform:'translate(10px,10px)'}}>
           <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
-        </div> <h5 style={{marginLeft:'3em', marginTop:'10px'}}>Langkah Memasak</h5>
+        </div> <h5 style={{marginLeft:'3em', marginTop:'10px'}} data-cy={'text-title'}>Langkah Memasak</h5>
       </Card.Title>
       <Card.Body>
         <Steps current={current} direction="vertical">
