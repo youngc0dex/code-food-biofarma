@@ -233,7 +233,7 @@ const CookPage = (props) => {
       </Card.Title>
       <Card.Body>
         <Steps current={current} direction="vertical">
-          { recipeCook.map((item,index) => {return <Step data-cy={'item-step'+index} title={"Step "+(index+1)} description={handleDescription(item, current, index)} />})}
+          { recipeCook.map((item,index) => {return <Step data-cy={'item-step'+index} title={"Step "+(item.stepOrder)} description={handleDescription(item, current, index)} />})}
         </Steps>
         {renderDoneCookButton()}
       </Card.Body>
@@ -241,7 +241,7 @@ const CookPage = (props) => {
   }
 
   const handleDoneButton = async(index) =>{
-    if(index == 0){
+    if(index == 1){
       try{
         let payload = {
           nServing:qty,
@@ -251,11 +251,10 @@ const CookPage = (props) => {
         let response = await postCookProgress(payload)
         let responseData = response.data.data
         setCurrentCookId(responseData.id)
-        updateCookingStep(index)
+        setRecipeCook(responseData.steps)
         return
       }catch(e){
-        message.error('Failed to update cooking progress')
-        return
+        return message.error('Failed to update cooking progress')
       }
     }
 
@@ -263,18 +262,12 @@ const CookPage = (props) => {
       let payload = {
           stepOrder:index + 1
       }
-      await updateCookProgress(currentCookId, payload)
-      updateCookingStep(index)
+      let response = await updateCookProgress(currentCookId, payload)
+      let responseData = response.data.data.steps
+      setRecipeCook(responseData)
     }catch(e){
       return message.error('Failed update current steps')
     }
-  }
-
-
-  const updateCookingStep = (index) =>{
-    let cookData= [...recipeCook];
-    cookData[index].done = true;
-    setRecipeCook(cookData)
   }
 
   const handleRenderProcessDone = (item, index) =>{
@@ -287,7 +280,7 @@ const CookPage = (props) => {
 
     return <button
       style={{color:'white',borderRadius:'6px', backgroundColor:'#2BAF2B', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
-      onClick={() => handleDoneButton(index)}
+      onClick={() => handleDoneButton(item.stepOrder)}
       data-cy={'button-step-done'}
     >Selesai</button>
   }
