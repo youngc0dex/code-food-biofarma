@@ -42,7 +42,6 @@ const RatingPage = (props) => {
 
   useEffect(() => {
     getFoodData()
-    getCategoryFoodData()
   }, []);
 
 
@@ -71,20 +70,6 @@ const RatingPage = (props) => {
     }
   }
 
-  const getCategoryFoodData = async() =>{
-    try{
-      let response = await getCategoryFood()
-      let categoryData = response.data.data
-      let allData = [{
-        id: 0,
-        name: 'Semua',
-      }]
-      let newArray = allData.concat(categoryData)
-      setCategoryFoodData(newArray)
-    }catch(e){
-      message.error('Error when fetching category data')
-    }
-  }
 
   const handleClearQuery = () =>{
     setSearchQuery('')
@@ -137,67 +122,8 @@ const RatingPage = (props) => {
           </div>
         </Col>
       </Row>
-      <div style={{width:'100%', height:'35%'}}>
-        {handleRenderCategoryButton()}
-      </div>
     </div>
   }
-
-  const handleRenderCategoryButton = () =>{
-    return <div className={'ratingpage-header-category-wrapper'}>
-      {categoryFoodData.map((item,index) => { return renderCategoryButton(item, index)})}
-    </div>
-  }
-
-  const renderCategoryButton = (item, index) =>{
-    return <div className={'ratingpage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'ratingpage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
-    </div>
-  }
-
-  const handleSortCategory =async(id) =>{
-    setCurrentCategory(id)
-    setCurrentSort('new')
-    if(searchQuery){
-      if(id == 0){
-        handleSearchRecipe()
-        return
-      }
-      handleSearchRecipeByCategory(id)
-      return
-    }
-    setLoad(true)
-    try{
-      let response = await getFilteredRecipes(id)
-      let foodData = response.data.data
-      setFoodData(foodData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error fetching filter data')
-      setLoad(false)
-    }
-  }
-
-  const renderStyleActiveCategoryButton = (id) => {
-    if (currentCategory == id) {
-      return 'category-active'
-    }
-    return 'category-non-active'
-  }
-
-  const handleSearchRecipeByCategory = async(id) =>{
-    setLoad(true)
-    try{
-      let response = await getSearchedRecipeByCateogry(searchQuery, id)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error when fetching data recipe by category')
-      setLoad(false)
-    }
-  }
-
 
   const handleInputSearch = (query) =>{
     setSearchQuery(query)

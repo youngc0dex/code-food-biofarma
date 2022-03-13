@@ -42,7 +42,6 @@ const CookPage = (props) => {
 
   useEffect(() => {
     getFoodData()
-    getCategoryFoodData()
     getRecipeStepsData()
   }, []);
 
@@ -72,20 +71,6 @@ const CookPage = (props) => {
     }
   }
 
-  const getCategoryFoodData = async() =>{
-    try{
-      let response = await getCategoryFood()
-      let categoryData = response.data.data
-      let allData = [{
-        id: 0,
-        name: 'Semua',
-      }]
-      let newArray = allData.concat(categoryData)
-      setCategoryFoodData(newArray)
-    }catch(e){
-      message.error('Error when fetching category data')
-    }
-  }
 
   const getRecipeStepsData = async() =>{
     try{
@@ -153,29 +138,7 @@ const CookPage = (props) => {
           </div>
         </Col>
       </Row>
-      <div style={{width:'100%', height:'35%'}}>
-        {handleRenderCategoryButton()}
-      </div>
     </div>
-  }
-
-  const handleRenderCategoryButton = () =>{
-    return <div className={'cookpage-header-category-wrapper'}>
-      {categoryFoodData.map((item,index) => { return renderCategoryButton(item, index)})}
-    </div>
-  }
-
-  const renderCategoryButton = (item, index) =>{
-    return <div className={'cookpage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'cookpage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
-    </div>
-  }
-
-  const renderStyleActiveCategoryButton = (id) => {
-    if (currentCategory == id) {
-      return 'category-active'
-    }
-    return 'category-non-active'
   }
 
   const handleSearchRecipeByCategory = async(id) =>{

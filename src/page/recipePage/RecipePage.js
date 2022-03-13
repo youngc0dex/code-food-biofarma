@@ -33,10 +33,10 @@ const RecipePage = (props) => {
   let params = useParams()
   const recipeId = params.id
   let navigate = useNavigate()
+  let token = localStorage.getItem('Food-Token')
 
   useEffect(() => {
     getFoodData()
-    getCategoryFoodData()
     getDetailRecipeData()
   }, []);
 
@@ -73,21 +73,6 @@ const RecipePage = (props) => {
       setRecipeDetail(responseData)
     }catch(e){
       message.error('Error when fetching recipe data')
-    }
-  }
-
-  const getCategoryFoodData = async() =>{
-    try{
-      let response = await getCategoryFood()
-      let categoryData = response.data.data
-      let allData = [{
-        id: 0,
-        name: 'Semua',
-      }]
-      let newArray = allData.concat(categoryData)
-      setCategoryFoodData(newArray)
-    }catch(e){
-      message.error('Error when fetching category data')
     }
   }
 
@@ -147,29 +132,7 @@ const RecipePage = (props) => {
           </div>
         </Col>
       </Row>
-      <div style={{width:'100%', height:'35%'}}>
-        {handleRenderCategoryButton()}
-      </div>
     </div>
-  }
-
-  const handleRenderCategoryButton = () =>{
-    return <div className={'recipepage-header-category-wrapper'}>
-      {categoryFoodData.map((item,index) => { return renderCategoryButton(item, index)})}
-    </div>
-  }
-
-  const renderCategoryButton = (item, index) =>{
-    return <div className={'recipepage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'recipepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
-    </div>
-  }
-
-  const renderStyleActiveCategoryButton = (id) => {
-    if (currentCategory == id) {
-      return 'category-active'
-    }
-    return 'category-non-active'
   }
 
   const handleSearchRecipeByCategory = async(id) =>{
@@ -301,9 +264,12 @@ const RecipePage = (props) => {
     }
   }
 
+  const handleRenderAll = () =>{
+    if(!token){
+      return <h1>NO TOKEN</h1>
+    }
 
-  return (
-    <div className={'recipepage'}>
+    return <>
       <div className={'recipepage-header'}>
         {renderHeader()}
       </div>
@@ -314,6 +280,13 @@ const RecipePage = (props) => {
           </div>}
         </div>
       </div>
+    </>
+  }
+
+
+  return (
+    <div className={'recipepage'}>
+      {handleRenderAll()}
     </div>
   );
 }

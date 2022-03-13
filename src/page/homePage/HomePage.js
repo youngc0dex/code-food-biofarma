@@ -29,6 +29,7 @@ const HomePage = (props) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
   let navigate = useNavigate()
+  let token = localStorage.getItem('Food-Token')
 
   useEffect(() => {
     getFoodData()
@@ -283,7 +284,6 @@ const HomePage = (props) => {
       setSuggestion([])
     }
   }
-
 
   return (
     <div className={'homepage'}>
