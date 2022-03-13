@@ -1,27 +1,29 @@
 import React, {useState, useEffect} from "react";
 // import { useHistory } from "react-router-dom";
-import './HomePage.scss'
+import './HistoryPage.scss'
 import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
 import {message} from 'antd'
 import HeaderLogo from '../../assets/logo/header-logo.png'
 import HistoryPNG from '../../assets/others/historyPNG.png'
 import empty from '../../assets/others/empty.png'
 import clear from '../../assets/others/x-button.png'
+import Back from '../../assets/others/back-button.png'
+
 
 import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
 import {
   getCategoryFood,
-  getFilteredRecipes,
+  getFilteredRecipes, getRecipeHistoryData,
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
   getSortedRecipeDataBySortName, searchRecipeQuery
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
-const HomePage = (props) => {
-  const [foodData, setFoodData] = useState([])
-  const [masterFoodData, setMasterFoodData] = useState([])
+const HistoryPage = (props) => {
+  const [historyData, setHistoryData] = useState([])
+  const [masterHistoryData, setMasterHistoryData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
   const [currentSort, setCurrentSort] = useState('new')
@@ -31,33 +33,18 @@ const HomePage = (props) => {
   let navigate = useNavigate()
 
   useEffect(() => {
-    getFoodData()
     getCategoryFoodData()
+    getHistoryData()
   }, []);
 
-
-  const getFoodData = async() =>{
-    setLoad(true)
+  const getHistoryData = async() =>{
     try{
-      let response = await getRecipes()
-      let recipeData = response.data.data
-      setFoodData(recipeData)
-      setMasterFoodData(recipeData)
-      setLoad(false)
+      let response = await getRecipeHistoryData()
+      let responseData = response.data.data.history
+      console.log(responseData, ' in i')
+      setHistoryData(responseData)
     }catch(e){
-      message.error('Error when fetching recipes data')
-      setLoad(false)
-    }
-  }
-
-  const handleSearchRecipe =async() =>{
-    try{
-      let response = await getSearchedRecipe(searchQuery)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setSuggestion([])
-    }catch(e){
-      return message.error('Error when fetching searched recipe')
+      message.error('Error fetching history data')
     }
   }
 
@@ -76,28 +63,23 @@ const HomePage = (props) => {
     }
   }
 
+  const handleSearchRecipe =async() =>{
+    try{
+      let response = await getSearchedRecipe(searchQuery)
+      let responseData = response.data.data
+      setSuggestion([])
+    }catch(e){
+      return message.error('Error when fetching searched recipe')
+    }
+  }
+
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
-    setFoodData(masterFoodData)
-  }
-
-  const handleNavigateLogin = () =>{
-    navigate('/login')
   }
 
   const handleClickSuggestion = (item) =>{
     navigate('/recipe/' +item.id)
-  }
-
-  const handleNavigateHistory = () =>{
-    let foodToken = localStorage.getItem('Food-Token')
-    if(!foodToken){
-      navigate('/login')
-      return
-    }
-    navigate('/history/')
-
   }
 
   const renderSuggestionBox = () =>{
@@ -112,26 +94,24 @@ const HomePage = (props) => {
     return
   }
 
+  const redirectBack = () =>{
+    navigate('/')
+  }
+
 
   const renderHeader = () =>{
-    return <div className={'homepage-header-wrapper'}>
-      <Row style={{height:'65%'}}>
+    return <div className={'historypage-header-wrapper'}>
+      <div style={{display:'flex', marginBottom:'1em'}}>
+        <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
+        <p style={{marginLeft:'1em', fontSize:'26px', fontWeight:'bolder',fontFamily:'Poppins', margin:'auto 0'}}>Riwayat</p>
+      </div>
+      <Row style={{height:'100%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}}/>
-          </div>
-        </Col>
-        <Col xs={7}  style={{margin:'auto'}}>
-          <div>
-              <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/> : ''}
             <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
-          </div>
-        </Col>
-        <Col style={{margin:'auto'}}>
-          <div>
-            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"} onClick={() =>handleNavigateHistory()}/>
           </div>
         </Col>
       </Row>
@@ -142,14 +122,14 @@ const HomePage = (props) => {
   }
 
   const handleRenderCategoryButton = () =>{
-    return <div className={'homepage-header-category-wrapper'}>
+    return <div className={'historypage-header-category-wrapper'}>
       {categoryFoodData.map((item,index) => { return renderCategoryButton(item, index)})}
     </div>
   }
 
   const renderCategoryButton = (item, index) =>{
-    return <div className={'homepage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
+    return <div className={'historypage-header-category'}>
+      <Button data-cy={"category-button-"+index} className={'historypage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
   }
 
@@ -165,7 +145,6 @@ const HomePage = (props) => {
     try{
       let response = await getSearchedRecipeByCateogry(searchQuery, id)
       let responseData = response.data.data
-      setFoodData(responseData)
       setLoad(false)
     }catch(e){
       message.error('Error when fetching data recipe by category')
@@ -188,7 +167,6 @@ const HomePage = (props) => {
     try{
       let response = await getFilteredRecipes(id)
       let foodData = response.data.data
-      setFoodData(foodData)
       setLoad(false)
     }catch(e){
       message.error('Error fetching filter data')
@@ -200,17 +178,6 @@ const HomePage = (props) => {
     navigate('/recipe/'+id)
   }
 
-  const handleRenderContent = () =>{
-    if(!foodData.recipes || foodData.recipes.length == 0){
-      return <div style={{margin:'0 auto', width:'587', height:'332'}}>
-        <img src={empty} data-cy={'list-image-empty'}/>
-      <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
-      </div>
-    }
-    return foodData.recipes.map((item,index) => {
-      return <FoodCard index ={index} recipe={item} type={'list'} handleNavigateToRecipeDetail={(id) => handleNavigateToRecipeDetail(id)}/>
-    })
-  }
 
   const renderSpinner = () =>{
     return <div style={{display:'flex',alignItems:'center', justifyContent:'center', height:'100%'}}>
@@ -221,14 +188,13 @@ const HomePage = (props) => {
   const handleSort = async(sortBy) =>{
     setCurrentSort(sortBy)
     if(sortBy == 'new'){
-      getFoodData()
+      getHistoryData()
       return
     }
     setLoad(true)
     try{
       let response = await getSortedRecipeDataBySortName(sortBy)
       let newCategoriesData = response.data.data
-      setFoodData(newCategoriesData)
       setLoad(false)
 
     }catch(e){
@@ -283,20 +249,28 @@ const HomePage = (props) => {
     setSuggestion([])
   }
 
+  const handleRenderContent = () =>{
+    if(historyData && historyData.length > 0){
+      return historyData.map(item => {
+        return <div style={{marginBottom: '1em'}}><FoodCard recipe={item} type={'history'}/></div>
+      })
+    }
+  }
+
   return (
-    <div className={'homepage'}>
-      <div className={'homepage-header'}>
+    <div className={'historypage'}>
+      <div className={'historypage-header'}>
         {renderHeader()}
       </div>
       <div style={{backgroundColor:'#E5E5E5'}}>
-        <div className={'homepage-body'}>
+        <div className={'historypage-body'}>
           <div>
             <div style={{display:'flex', alignItems:'center', marginBottom:'20px'}}>
               <p style={{fontFamily:'Poppins', marginBottom:'0',fontWeight:'bold', fontSize:'16px', lineHeight:'24px'}}>Urutkan:</p>
               {renderSortButton()}
             </div>
           </div>
-          {load ? renderSpinner() : <div className={'homepage-body-cards'}>
+          {load ? renderSpinner() : <div>
             {handleRenderContent()}
           </div>}
         </div>
@@ -305,4 +279,4 @@ const HomePage = (props) => {
   );
 }
 
-export default HomePage;
+export default HistoryPage;

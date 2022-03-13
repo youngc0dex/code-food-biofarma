@@ -272,7 +272,7 @@ const CookPage = (props) => {
 
   const handleDescription = (item,current,index) =>{
     return <div>
-      <p style={{fontWeight:'600'}}>{item.description}</p>
+      <p style={{fontWeight:'600'}} data-cy={'text-step-description'}>{item.description}</p>
       {index <= current ? handleRenderProcessDone(item, index) : ''}
     </div>
   }

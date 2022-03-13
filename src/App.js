@@ -14,16 +14,18 @@ import CookPage from "./page/cookPage/CookPage"
 import RatingPage from "./page/ratingPage/RatingPage"
 
 import './index.css'
+import HistoryPage from "./page/historyPage/HistoryPage";
 function App(props) {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
-    {/*<Router >*/}
+    // <Router basename={process.env.PUBLIC_URL}>
+    <Router >
       <Routes>
           <Route exact path='/' element={<Homepage/>} />
           <Route path='/login' element ={<Login/>}/>
           <Route path='/recipe/:id' element ={<RecipePage/>}/>
           <Route path='/cook/:id/:nServe' element ={<CookPage/>}/>
           <Route path='/rating/:id' element ={<RatingPage/>}/>
+         <Route path='/history' element ={<HistoryPage/>}/>
       </Routes >
     </Router>
   );

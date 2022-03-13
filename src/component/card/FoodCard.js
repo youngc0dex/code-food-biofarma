@@ -4,11 +4,17 @@ import goodRating from '../../assets/others/goodRating.png';
 import midRating from '../../assets/others/midRating.png';
 import badRating from '../../assets/others/badRating.png';
 import Back from '../../assets/others/back-button.png'
+import LikeImage from '../../assets/others/RateLike.png'
+import LikeImageChosen from '../../assets/others/ratingLikeChosen.png'
+import NeutralImage from '../../assets/others/RatingNeutral.png'
+import SadImage from '../../assets/others/RatingSad.png'
+import Moment from "react-moment";
 
 
 
 const FoodCard = (props) => {
   const {recipe,index,type, handleNavigateToRecipeDetail, redirectBack} = props
+
 
   const handleRenderCard =() =>{
     if(type == 'list'){
@@ -21,6 +27,10 @@ const FoodCard = (props) => {
 
     if(type =='cook'){
       return handleRenderCookCard()
+    }
+
+    if(type =='history'){
+      return handleRenderHistoryCard()
     }
   }
 
@@ -121,6 +131,78 @@ const FoodCard = (props) => {
         </Card.Body>
       </Card>
     </div>
+  }
+
+  const handleRenderHistoryCard = () =>{
+    return <Card style={{height:'245px', borderRadius:'6px' }}>
+      <Card.Body>
+        <Card.Title style={{fontSize:'12px',lineHeight:'27px', fontFamily:'Poppins'}} ><Moment format="DD MMMM YYYY">
+          {recipe.createdAt}
+        </Moment></Card.Title>
+        <Card.Text>
+          <div style={{display:'flex', width:'100%'}}>
+            <div>
+              <img style={{width:'111px', height:'111px', objectFit:'cover',  borderRadius:'6px'}} src={recipe.recipeImage}/>
+            </div>
+
+            <div style={{width:'100%',margin:'0 1em'}}>
+              <p style={{fontWeight:'bold', fontFamily:'Poppins'}}>{recipe.recipeName}</p>
+              <p style={{color:'#898989',fontFamily:'Poppins'}}>{recipe.id}</p>
+
+              <div style={{justifyContent:'space-between', display:'flex'}}>
+                <p style={{color:'#898989',fontFamily:'Poppins'}}>{recipe.recipeCategoryName}</p>
+                <p>Porsi: <span style={{fontWeight:'bold'}}>{recipe.nServing}</span></p>
+              </div>
+            </div>
+          </div>
+        </Card.Text>
+        <hr/>
+        <Card.Text>
+          <div style={{display:'flex', justifyContent:'space-between', width:'100%'}}>
+            <div>
+              {handleRenderReaction(recipe.reaction)}
+            </div>
+
+            <div>
+              {handleRenderPercentation(recipe.nStep,recipe.nStepDone)}
+            </div>
+          </div>
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  }
+
+  const handleRenderReaction = (reaction) =>{
+    if(reaction == 'like'){
+      return <div style={{display:'flex'}}>
+        <img src={LikeImageChosen} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
+        <p style={{color:'green'}}>Yummy!</p>
+      </div>
+    }
+
+    if(reaction == 'neutral'){
+      return <div style={{display:'flex'}}>
+        <img src={NeutralImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
+        <p style={{color:'green'}}>Lumayan</p>
+      </div>
+    }
+
+    if(reaction == 'dislike'){
+      return <div style={{display:'flex'}}>
+        <img src={SadImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
+        <p style={{color:'green'}}>Kurang Suka</p>
+      </div>
+    }
+
+    return <p style={{fontFamily:'Poppins'}}>Belum ada penilaian</p>
+  }
+
+  const handleRenderPercentation = (stepOfServe, currentServe) =>{
+    let percentage = (currentServe / stepOfServe) * 100
+    if(percentage == 100){
+      return <p style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
+    }
+    return <p style={{fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
   }
 
   return (

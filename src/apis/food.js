@@ -50,3 +50,7 @@ export const sendCookReaction = (id,payload) =>{
 export const searchRecipeQuery = (q) =>{
   return axios.get(API_BASE_URL + '/search/recipes?limit&q=' + q)
 }
+
+export const getRecipeHistoryData = () =>{
+  return axios.get(API_BASE_URL + '/serve-histories', {headers: TokenService.getheader()})
+}
