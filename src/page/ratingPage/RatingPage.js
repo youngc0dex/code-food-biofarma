@@ -201,7 +201,9 @@ const RatingPage = (props) => {
   const navigateToHome = () =>{
     let token = TokenService.getToken();
     localStorage.setItem('Food-Token', token)
-    navigate('/')
+    setTimeout(() =>{
+      navigate('/')
+    },1000)
   }
 
   const renderRated = () =>{

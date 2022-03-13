@@ -96,8 +96,7 @@ const HomePage = (props) => {
       navigate('/login')
       return
     }
-    navigate('/history/')
-
+    navigate('/history')
   }
 
   const renderSuggestionBox = () =>{
