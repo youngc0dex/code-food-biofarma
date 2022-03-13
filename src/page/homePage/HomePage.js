@@ -131,6 +131,7 @@ const HomePage = (props) => {
           <div>
             <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"} onClick={() =>handleNavigateHistory()}/>
           </div>
+          {!token ? <p>NO TOKEN</p> : ''}
         </Col>
       </Row>
       <div style={{width:'100%', height:'35%'}}>
