@@ -18,6 +18,10 @@ const FoodCard = (props) => {
     if(type == 'detail'){
       return handleRenderDetailCard()
     }
+
+    if(type =='cook'){
+      return handleRenderCookCard()
+    }
   }
 
   const handleRenderIngredients = () =>{
@@ -101,6 +105,19 @@ const FoodCard = (props) => {
             <h3 style={{fontFamily:'Poppins', fontWeight:'600', fontSize:'20px'}} data-cy={'detail-text-ingredients'}>Bahan-Bahan:</h3>
             {handleRenderIngredients()}
           </div>
+        </Card.Body>
+      </Card>
+    </div>
+  }
+
+  const handleRenderCookCard = () =>{
+    return <div className={'card-component'} style={{cursor:'pointer'}} >
+      <Card style={{ width: '264px', height:'333px', borderRadius:'6px' }}>
+        <Card.Body>
+          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} >Step 1</Card.Title>
+          <Card.Text style={{fontSize:'14px', color:'#828282', fontFamily:'Poppins',fontWeight:'400',font:'Poppins'}} >
+            Step 2
+          </Card.Text>
         </Card.Body>
       </Card>
     </div>
