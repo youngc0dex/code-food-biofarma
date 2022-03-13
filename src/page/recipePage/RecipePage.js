@@ -1,25 +1,25 @@
 import React, {useState, useEffect} from "react";
 // import { useHistory } from "react-router-dom";
-import './HomePage.scss'
-import {Button, Col, Container, Row, Spinner} from "react-bootstrap";
+import './RecipePage.scss'
+import {Button, Card, Col, Container, Row, Spinner} from "react-bootstrap";
 import {message} from 'antd'
 import HeaderLogo from '../../assets/logo/header-logo.png'
 import HistoryPNG from '../../assets/others/historyPNG.png'
-import empty from '../../assets/others/empty.png'
+import Increase from '../../assets/others/increase-portion.png'
+import Decrease from '../../assets/others/decrease-portion.png'
 import clear from '../../assets/others/x-button.png'
-
 import {Input} from "antd";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getCategoryFood,
-  getFilteredRecipes,
+  getFilteredRecipes, getRecipeDetail,
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
-const HomePage = (props) => {
+
+const RecipePage = (props) => {
   const [foodData, setFoodData] = useState([])
   const [masterFoodData, setMasterFoodData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
@@ -28,11 +28,16 @@ const HomePage = (props) => {
   const [currentCategory, setCurrentCategory] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
+  const [recipeDetail, setRecipeDetail] = useState('')
+  const [qty,setQty] = useState(1)
+  let params = useParams()
+  const recipeId = params.id
   let navigate = useNavigate()
 
   useEffect(() => {
     getFoodData()
     getCategoryFoodData()
+    getDetailRecipeData()
   }, []);
 
 
@@ -61,6 +66,16 @@ const HomePage = (props) => {
     }
   }
 
+  const getDetailRecipeData = async() =>{
+    try{
+      let response = await getRecipeDetail(recipeId)
+      let responseData = response.data.data
+      setRecipeDetail(responseData)
+    }catch(e){
+      message.error('Error when fetching recipe data')
+    }
+  }
+
   const getCategoryFoodData = async() =>{
     try{
       let response = await getCategoryFood()
@@ -82,8 +97,8 @@ const HomePage = (props) => {
     getFoodData()
   }
 
-  const handleNavigateLogin = () =>{
-    navigate('/login')
+  const redirectBack = () =>{
+    navigate('/')
   }
 
   const handleClickSuggestion = (item) =>{
@@ -111,16 +126,16 @@ const HomePage = (props) => {
 
 
   const renderHeader = () =>{
-    return <div className={'homepage-header-wrapper'}>
+    return <div className={'recipepage-header-wrapper'}>
       <Row style={{height:'65%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}}/>
+            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}} onClick={() => navigate('/')}/>
           </div>
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-              <Input style={{width:'80%'}} value={searchQuery} data-cy="header-button-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-button-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
               : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="form-button-submit-portion">Cari</Button>
             {renderSuggestionBox()}
@@ -139,14 +154,14 @@ const HomePage = (props) => {
   }
 
   const handleRenderCategoryButton = () =>{
-    return <div className={'homepage-header-category-wrapper'}>
+    return <div className={'recipepage-header-category-wrapper'}>
       {categoryFoodData.map((item,index) => { return renderCategoryButton(item, index)})}
     </div>
   }
 
   const renderCategoryButton = (item, index) =>{
-    return <div className={'homepage-header-category'}>
-      <Button data-cy={"category-button-"+index} className={'homepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
+    return <div className={'recipepage-header-category'}>
+      <Button data-cy={"category-button-"+index} className={'recipepage-header-category-button ' + renderStyleActiveCategoryButton(item.id)} onClick={() => handleSortCategory(item.id)}>{item.name}</Button>
     </div>
   }
 
@@ -193,20 +208,71 @@ const HomePage = (props) => {
     }
   }
 
-  const handleNavigateToRecipeDetail = (id) =>{
-    navigate('/recipe/'+id)
+  const handleRenderContent = () =>{
+    return <Row>
+      <Col >
+        <FoodCard redirectBack ={() => redirectBack()} type={'detail'} recipe={recipeDetail}/>
+      </Col>
+      <Col md={'auto'}>
+        {renderQtyCard()}
+      </Col>
+
+    </Row>
   }
 
-  const handleRenderContent = () =>{
-    if(!foodData.recipes || foodData.recipes.length == 0){
-      return <div style={{margin:'0 auto', width:'587', height:'332'}}>
-        <img src={empty} data-cy={'list-image-empty'}/>
-      <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
-      </div>
+  const handleIncDecBtn = (type) =>{
+    if(type == 'dec'){
+      setQty(qty-1)
+      return
     }
-    return foodData.recipes.map((item,index) => {
-      return <FoodCard index ={index} recipe={item} type={'list'} handleNavigateToRecipeDetail={(id) => handleNavigateToRecipeDetail(id)}/>
-    })
+    setQty(qty+1)
+  }
+
+  const renderFormFailed = () =>{
+    if(qty < 1){
+      return <div data-cy='form-alert-container' style={{width:'350px',marginTop:'1em',display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
+          <p data-cy="one-line" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Jumlah porsi minimal adalah 1</p>
+          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="with-button" onClick={()=>setQty(1)}>OK</p>
+        </div>
+
+    }
+  }
+
+  const renderQtyCard = () =>{
+    return <div style={{margin:'0 auto'}}>
+      <Card style={{width:'350px'}} data-cy={'form-portion'}>
+        <Card.Body>
+          <Card.Title style={{fontSize:'18px',fontWeight:'bold',lineHeight:'27px', fontFamily:'Poppins', marginBottom:'2em'}} data-cy='list-item-text-title'>Jumlah porsi yang dimasak</Card.Title>
+          <Row>
+            <Col s={'auto'} xs={'auto'} md={'auto'}>
+              <div>
+                <img src={Decrease} style={{width:'22px', height:'22px', cursor:'pointer'}} data-cy={'form-button-decrease-portion akar-icons:circle-minus'} onClick={() =>handleIncDecBtn('dec')}/>
+              </div>
+            </Col>
+
+            <Col>
+              <div>
+                <Input type={'number'} disabled={qty < 1} value={qty} data-cy={'form-value-portion'} onChange={(e) => setQty(e.target.value)}/>
+              </div>
+            </Col>
+
+            <Col s={'auto'} xs={'auto'} md={'auto'}>
+              <div>
+                <img src={Increase} style={{width:'22px', height:'22px', cursor:'pointer'}} data-cy={'form-button-increase-portion akar-icons:circle-plus-fill'} onClick={() =>handleIncDecBtn('inc')}/>
+              </div>
+            </Col>
+          </Row>
+
+          <div style={{width:'100%', marginTop:'2em'}}>
+            <button className={'start-cooking-button'} data-cy={'form-button-submit-portion'}>Mulai Memasak</button>
+          </div>
+
+        </Card.Body>
+      </Card>
+      <div>
+        {renderFormFailed()}
+      </div>
+    </div>
   }
 
   const renderSpinner = () =>{
@@ -215,68 +281,15 @@ const HomePage = (props) => {
     </div>
   }
 
-  const handleSort = async(sortBy) =>{
-    setCurrentSort(sortBy)
-    if(sortBy == 'new'){
-      getFoodData()
-      return
-    }
-    setLoad(true)
-    try{
-      let response = await getSortedRecipeDataBySortName(sortBy)
-      let newCategoriesData = response.data.data
-      setFoodData(newCategoriesData)
-      setLoad(false)
-
-    }catch(e){
-      message.error('Error fetching sorted data')
-      setLoad(false)
-
-    }
-  }
-
-  const renderStyleActiveSort = (code) =>{
-    if(code == currentSort){
-      return 'active-button-sort'
-    }
-    return 'not-active-button-sort'
-  }
-
-  const renderSortButton = () =>{
-    let sortButton =[
-      {
-        name:'Terbaru',
-        code:'new',
-        dataCy:'button-sort-latest'
-      },{
-        name:'Urutkan A-Z',
-        code:'name_asc',
-        dataCy:'button-sort-az'
-      },{
-        name:'Urutkan Z-A',
-        code:'name_desc',
-        dataCy:'button-sort-za'
-      },{
-        name:'Urutkan Dari Paling Disukai',
-        code:'like_desc',
-        dataCy:'button-sort-favorite'
-      },
-    ]
-
-    return sortButton.map(item => {return <Button className={renderStyleActiveSort(item.code)} data-cy={item.dataCy} style={{margin:'0 10px'}} onClick={() =>handleSort(item.code)}>
-      {item.name}
-    </Button>})
-  }
-
 
   const handleInputSearch = (query) =>{
     setSearchQuery(query)
     if(masterFoodData.recipes.length > 0){
-          let matchesNew = masterFoodData.recipes.filter(item => {
-              return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
-            }
-          );
-          setSuggestion(matchesNew)
+      let matchesNew = masterFoodData.recipes.filter(item => {
+          return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
+        }
+      );
+      setSuggestion(matchesNew)
     }
 
     if(!query){
@@ -286,19 +299,13 @@ const HomePage = (props) => {
 
 
   return (
-    <div className={'homepage'}>
-      <div className={'homepage-header'}>
+    <div className={'recipepage'}>
+      <div className={'recipepage-header'}>
         {renderHeader()}
       </div>
       <div style={{backgroundColor:'#E5E5E5'}}>
-        <div className={'homepage-body'}>
-          <div>
-            <div style={{display:'flex', alignItems:'center', marginBottom:'20px'}}>
-              <p style={{fontFamily:'Poppins', marginBottom:'0',fontWeight:'bold', fontSize:'16px', lineHeight:'24px'}}>Urutkan:</p>
-              {renderSortButton()}
-            </div>
-          </div>
-          {load ? renderSpinner() : <div className={'homepage-body-cards'}>
+        <div className={'recipepage-body'}>
+          {load ? renderSpinner() : <div className={'recipepage-body-cards'}>
             {handleRenderContent()}
           </div>}
         </div>
@@ -307,4 +314,4 @@ const HomePage = (props) => {
   );
 }
 
-export default HomePage;
+export default RecipePage;

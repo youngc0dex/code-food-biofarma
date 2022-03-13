@@ -9,15 +9,17 @@ import 'antd/dist/antd.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './page/loginPage/login'
 import Homepage from './page/homePage/HomePage'
-import './index.css'
+import RecipePage from "./page/recipePage/RecipePage";
 
-function App() {
+import './index.css'
+function App(props) {
   return (
     // <Router basename={process.env.PUBLIC_URL}>
     <Router >
       <Routes>
           <Route exact path='/' element={<Homepage/>} />
           <Route path='/login' element ={<Login/>}/>
+          <Route path='/recipe/:id' element ={<RecipePage/>}/>
         </Routes >
     </Router>
   );

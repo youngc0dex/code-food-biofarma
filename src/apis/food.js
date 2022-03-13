@@ -24,3 +24,7 @@ export const getSearchedRecipe = (query) =>{
 export const getSearchedRecipeByCateogry = (searchQuery, categoryId) =>{
   return axios.get(API_BASE_URL +`/recipes?q=${searchQuery}&categoryId=${categoryId}`)
 }
+
+export const getRecipeDetail = (id) =>{
+  return axios.get(API_BASE_URL +`/recipes/${id}?nServing=1`)
+}
