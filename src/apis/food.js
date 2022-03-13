@@ -46,3 +46,7 @@ export const updateCookProgress = (id,payload) =>{
 export const sendCookReaction = (id,payload) =>{
   return axios.post(API_BASE_URL + `/serve-histories/${id}/reaction`, payload,{headers: TokenService.getheader()})
 }
+
+export const searchRecipeQuery = (q) =>{
+  return axios.get(API_BASE_URL + '/search/recipes?limit&q=' + q)
+}

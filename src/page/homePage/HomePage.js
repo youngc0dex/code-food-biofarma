@@ -15,7 +15,7 @@ import {
   getFilteredRecipes,
   getRecipes,
   getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName
+  getSortedRecipeDataBySortName, searchRecipeQuery
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
@@ -29,7 +29,6 @@ const HomePage = (props) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
   let navigate = useNavigate()
-  let token = localStorage.getItem('Food-Token')
 
   useEffect(() => {
     getFoodData()
@@ -58,7 +57,7 @@ const HomePage = (props) => {
       setFoodData(responseData)
       setSuggestion([])
     }catch(e){
-      message.error('Error when fetching searched recipe')
+      return message.error('Error when fetching searched recipe')
     }
   }
 
@@ -80,7 +79,7 @@ const HomePage = (props) => {
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
-    getFoodData()
+    setFoodData(masterFoodData)
   }
 
   const handleNavigateLogin = () =>{
@@ -122,8 +121,8 @@ const HomePage = (props) => {
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
               <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
-            {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/>
-              : ''}<Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-search">Cari</Button>
+            {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/> : ''}
+            <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
           </div>
         </Col>
@@ -131,7 +130,6 @@ const HomePage = (props) => {
           <div>
             <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"} onClick={() =>handleNavigateHistory()}/>
           </div>
-          {!token ? <p>NO TOKEN</p> : ''}
         </Col>
       </Row>
       <div style={{width:'100%', height:'35%'}}>
@@ -271,19 +269,15 @@ const HomePage = (props) => {
   }
 
 
-  const handleInputSearch = (query) =>{
+  const handleInputSearch = async(query) =>{
     setSearchQuery(query)
-    if(masterFoodData.recipes.length > 0){
-          let matchesNew = masterFoodData.recipes.filter(item => {
-              return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
-            }
-          );
-          setSuggestion(matchesNew)
+    if(query.length > 1){
+      let response = await searchRecipeQuery(query)
+      let responseData = response.data.data
+      setSuggestion(responseData)
+      return
     }
-
-    if(!query){
-      setSuggestion([])
-    }
+    setSuggestion([])
   }
 
   return (

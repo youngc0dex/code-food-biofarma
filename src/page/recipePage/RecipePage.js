@@ -264,12 +264,8 @@ const RecipePage = (props) => {
     }
   }
 
-  const handleRenderAll = () =>{
-    if(!token){
-      return <h1>NO TOKEN</h1>
-    }
-
-    return <>
+  return (
+    <div className={'recipepage'}>
       <div className={'recipepage-header'}>
         {renderHeader()}
       </div>
@@ -280,13 +276,6 @@ const RecipePage = (props) => {
           </div>}
         </div>
       </div>
-    </>
-  }
-
-
-  return (
-    <div className={'recipepage'}>
-      {handleRenderAll()}
     </div>
   );
 }
