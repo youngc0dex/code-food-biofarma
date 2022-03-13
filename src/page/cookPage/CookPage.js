@@ -271,10 +271,6 @@ const CookPage = (props) => {
   }
 
   const handleRenderProcessDone = (item, index) =>{
-    let foodToken = localStorage.getItem('Food-Token')
-    if(!foodToken){
-      return <h5>No TOKEN</h5>
-    }
     if(item.done){
       return <div style={{display:'flex'}}>
         <img src={Cek} style={{width:'12px',height:'12px', margin:'auto 0'}}/>
@@ -303,7 +299,7 @@ const CookPage = (props) => {
   }
 
   const handleServeFood = async() =>{
-
+    navigate('/rating/' + currentCookId)
   }
 
 

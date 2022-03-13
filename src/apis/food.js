@@ -42,3 +42,7 @@ export const postCookProgress = (payload) =>{
 export const updateCookProgress = (id,payload) =>{
   return axios.put(API_BASE_URL+`/serve-histories/${id}/done-step`, payload, {headers: TokenService.getheader()})
 }
+
+export const sendCookReaction = (id,payload) =>{
+  return axios.post(API_BASE_URL + `/serve-histories/${id}/reaction`, payload,{headers: TokenService.getheader()})
+}
