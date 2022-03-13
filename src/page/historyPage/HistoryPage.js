@@ -206,22 +206,10 @@ const HistoryPage = (props) => {
     return 'category-non-active'
   }
 
-  const handleSearchRecipeByCategory = async(id) =>{
-    setLoad(true)
-    try{
-      let response = await getSearchedRecipeByCateogry(searchQuery, id)
-      let responseData = response.data.data
-      setLoad(false)
-    }catch(e){
-      message.error('Error when fetching data recipe by category')
-      setLoad(false)
-    }
-  }
-
   const handleSortCategory =async(id) =>{
     setLoad(true)
    try{
-      await getHistoryData('','','',id)
+      await getHistoryData('','','','')
       setCurrentCategory(id)
       setLoad(false)
    }catch(e){
