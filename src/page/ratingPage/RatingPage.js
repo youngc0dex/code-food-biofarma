@@ -25,6 +25,7 @@ import {
   getSortedRecipeDataBySortName, sendCookReaction
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
+import TokenService from "../../apis/auth/token";
 
 const RatingPage = (props) => {
   const [foodData, setFoodData] = useState([])
@@ -197,6 +198,12 @@ const RatingPage = (props) => {
     </div>
   }
 
+  const navigateToHome = () =>{
+    let token = TokenService.getToken();
+    localStorage.setItem('Food-Token', token)
+    navigate('/')
+  }
+
   const renderRated = () =>{
     return <div>
       <Card.Body>
@@ -206,7 +213,7 @@ const RatingPage = (props) => {
         </div>
 
         <div style={{textAlign:'center'}}>
-          <Button data-cy={'button-home'} onClick={() => navigate('/')} style={{backgroundColor:'#EF5734', color:'white', border:'none', width:'50%', padding:'1em 0', fontWeight:'500', fontFamily:'Poppins'}}>
+          <Button data-cy={'button-home'} onClick={() => navigateToHome()} style={{backgroundColor:'#EF5734', color:'white', border:'none', width:'50%', padding:'1em 0', fontWeight:'500', fontFamily:'Poppins'}}>
             Kembali ke beranda
           </Button>
         </div>
