@@ -100,8 +100,8 @@ const HomePage = (props) => {
   const renderSuggestionBox = () =>{
     if(suggestion.length > 0){
       return <div className={'suggestion-box'} data-cy={'search-suggestion-container'}>
-        {suggestion.map(item =>{
-          return <div style={{padding: '0.5em', cursor:'pointer'}} onClick={() =>handleClickSuggestion(item)}>
+        {suggestion.map((item,index) =>{
+          return <div style={{padding: '0.5em', cursor:'pointer'}} data-cy={'search-suggestion-'+index}onClick={() =>handleClickSuggestion(item)}>
             <p style={{marginBottom:'0'}}>{item.name}</p>
           </div>})}
       </div>
