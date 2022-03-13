@@ -115,8 +115,8 @@ const RecipePage = (props) => {
   const renderSuggestionBox = () =>{
     if(suggestion.length > 0){
       return <div className={'suggestion-box'} data-cy={'search-suggestion-container'}>
-        {suggestion.map(item =>{
-          return <div style={{padding: '0.5em', cursor:'pointer'}} onClick={() =>handleClickSuggestion(item)}>
+        {suggestion.map((item,index) =>{
+          return <div style={{padding: '0.5em', cursor:'pointer'}} data-cy={'search-suggestion-'+index}onClick={() =>handleClickSuggestion(item)}>
             <p style={{marginBottom:'0'}}>{item.name}</p>
           </div>})}
       </div>
@@ -242,7 +242,7 @@ const RecipePage = (props) => {
     return <div style={{margin:'0 auto'}}>
       <Card style={{width:'350px'}} data-cy={'form-portion'}>
         <Card.Body>
-          <Card.Title style={{fontSize:'18px',fontWeight:'bold',lineHeight:'27px', fontFamily:'Poppins', marginBottom:'2em'}} data-cy='list-item-text-title'>Jumlah porsi yang dimasak</Card.Title>
+          <Card.Title style={{fontSize:'18px',fontWeight:'bold',lineHeight:'27px', fontFamily:'Poppins', marginBottom:'2em'}} data-cy='text-title'>Jumlah porsi yang dimasak</Card.Title>
           <Row>
             <Col s={'auto'} xs={'auto'} md={'auto'}>
               <div data-cy={'form-button-decrease-portion'}>

@@ -78,10 +78,10 @@ const FoodCard = (props) => {
         <div style={{position:'absolute', transform:'translate(10px,10px)'}}>
           <button data-cy='button-back' onClick={() =>redirectBack()} style={{border:'none', backgroundColor:'transparent'}}><img style={{width:'30px'}} src={Back}/></button>
         </div>
-        <Card.Img style={{width:'100%', height:'439px'}}variant="top" src={recipe.image} data-cy={'list-item-0'}/>
+        <Card.Img style={{width:'100%', height:'439px'}}variant="top" src={recipe.image} data-cy={'detail-image'}/>
 
         <Card.Body>
-          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} data-cy='detail-text-title'>{recipe.name}</Card.Title>
+          <Card.Title style={{fontSize:'18px',lineHeight:'27px', fontFamily:'Poppins'}} data-cy='text-title'>{recipe.name}</Card.Title>
           <div style={{display:'flex', flexWrap:'wrap'}}>
               <div style={{display:'flex', alignItems:'center',padding:'2px',borderRadius: '9px',border: '1px solid #EAEAEA', width:'54px'}} data-cy={'detail-like'}>
                 <img src={goodRating} style={{width:'16px', height:'16px'}}/>
