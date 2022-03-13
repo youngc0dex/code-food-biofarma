@@ -51,8 +51,8 @@ export const searchRecipeQuery = (q) =>{
   return axios.get(API_BASE_URL + '/search/recipes?limit&q=' + q)
 }
 
-export const getRecipeHistoryData = (searchQuery,sort,status,catId) =>{
-  return axios.get(API_BASE_URL + `/serve-histories?q=${searchQuery}&sort=${sort}&status=${status}&categoryId=${catId}`,
+export const getRecipeHistoryData = (searchQuery,sort,status) =>{
+  return axios.get(API_BASE_URL + `/serve-histories?q=${searchQuery}&sort=${sort}&status=${status}`,
     {headers: TokenService.getheader()})
 }
 

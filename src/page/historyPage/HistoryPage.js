@@ -45,14 +45,13 @@ const HistoryPage = (props) => {
     navigate('/rating/'+serveId)
   }
 
-  const getHistoryData = async(searchQueries, currentSorts, currentStatuses, currentCategories) =>{
+  const getHistoryData = async(searchQueries, currentSorts, currentStatuses) =>{
     let sq = searchQueries ? searchQueries : searchQuery ? searchQuery : '';
     let cs = currentSorts ? currentSorts : currentSort ? currentSort : ''
     let cst = currentStatuses ? currentStatuses :currentStatus ? currentStatus : ''
-    let cctg = currentCategories ? currentCategories : currentCategory ? currentCategory : '';
 
     try{
-      let response = await getRecipeHistoryData(sq,cs,cst,cctg)
+      let response = await getRecipeHistoryData(sq,cs,cst)
       let responseData = response.data.data.history
       setHistoryData(responseData)
     }catch(e){
@@ -99,7 +98,7 @@ const HistoryPage = (props) => {
   const handleSearchRecipe =async() =>{
     setLoad(true)
     try{
-      await getHistoryData('','','','')
+      await getHistoryData('','','')
       setSuggestion([])
       setLoad(false)
     }catch(e){
@@ -111,7 +110,7 @@ const HistoryPage = (props) => {
   const handleClearQuery = () =>{
     setSuggestion([])
     setSearchQuery('')
-    getHistoryData(' ','','','')
+    getHistoryData(' ','','',)
   }
 
   const handleClickSuggestion = (item) =>{
@@ -165,7 +164,7 @@ const HistoryPage = (props) => {
 
   const handleModalClick = async(code, index, title) =>{
     try{
-      await getHistoryData('','', code,'')
+      await getHistoryData('','', code)
       categoryFoodData[index].name = title
       setShowModal(false)
     }catch(e){
@@ -207,15 +206,7 @@ const HistoryPage = (props) => {
   }
 
   const handleSortCategory =async(id) =>{
-    setLoad(true)
-   try{
-      await getHistoryData('','','',id)
-      setCurrentCategory(id)
-      setLoad(false)
-   }catch(e){
-     setLoad(false)
-     return message.error('Error fetching data')
-   }
+    setCurrentCategory(id)
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
