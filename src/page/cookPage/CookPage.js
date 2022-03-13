@@ -260,7 +260,7 @@ const CookPage = (props) => {
 
     try{
       let payload = {
-          stepOrder:index + 1
+          stepOrder:index
       }
       let response = await updateCookProgress(currentCookId, payload)
       let responseData = response.data.data.steps
