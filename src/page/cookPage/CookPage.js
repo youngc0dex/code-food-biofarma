@@ -196,11 +196,15 @@ const CookPage = (props) => {
       </Card.Title>
       <Card.Body>
         <Steps current={current} direction="vertical">
-          { recipeCook.map((item,index) => {return <Step title={"Step "+(item.stepOrder)} description={handleDescription(item, current, index)} />})}
+          { recipeCook.map((item,index) => {return <Step data-cy={'item-step-'+index} title={renderStepText(item.stepOrder)} description={handleDescription(item, current, index)} />})}
         </Steps>
         {renderDoneCookButton()}
       </Card.Body>
     </Card>
+  }
+
+  const renderStepText = (order) =>{
+    return <h5 data-cy={'text-step-title'}>Step {order}</h5>
   }
 
   const handleDoneButton = async(index) =>{
@@ -268,7 +272,7 @@ const CookPage = (props) => {
 
   const handleDescription = (item,current,index) =>{
     return <div>
-      <p data-cy={'item-step-'+index} style={{fontWeight:'600'}}>{item.description}</p>
+      <p style={{fontWeight:'600'}}>{item.description}</p>
       {index <= current ? handleRenderProcessDone(item, index) : ''}
     </div>
   }
