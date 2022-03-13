@@ -8,7 +8,7 @@ export class TokenService {
   }
   static getheader(){
     let headers = {
-      // Authorization: `Bearer ${this.getToken()}`,
+      Authorization: `Bearer ${this.getToken()}`,
     }
     return headers;
   }
