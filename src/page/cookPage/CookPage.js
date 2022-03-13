@@ -251,6 +251,7 @@ const CookPage = (props) => {
     return <button
       style={{color:'white',borderRadius:'6px', backgroundColor:'#2BAF2B', border:'none', width:'250px', fontFamily:'Poppins', fontWeight:'600', padding:'1em 0'}}
       onClick={() => handleDoneButton(index)}
+      data-cy={'button-step-done'}
     >Selesai</button>
   }
 
