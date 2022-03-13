@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/code-food-biofarma/static/css/main.f6fd248b.css",
-    "main.js": "/code-food-biofarma/static/js/main.29777fe8.js",
+    "main.js": "/code-food-biofarma/static/js/main.a69f69d7.js",
     "static/js/787.9cd59d0f.chunk.js": "/code-food-biofarma/static/js/787.9cd59d0f.chunk.js",
     "static/media/empty.png": "/code-food-biofarma/static/media/empty.982b65558f29358c50db.png",
     "static/media/image-rate.png": "/code-food-biofarma/static/media/image-rate.f33b32052ecaeda29d34.png",
@@ -9,11 +9,11 @@
     "static/media/content-logo.png": "/code-food-biofarma/static/media/content-logo.12805a303d8406923039.png",
     "index.html": "/code-food-biofarma/index.html",
     "main.f6fd248b.css.map": "/code-food-biofarma/static/css/main.f6fd248b.css.map",
-    "main.29777fe8.js.map": "/code-food-biofarma/static/js/main.29777fe8.js.map",
+    "main.a69f69d7.js.map": "/code-food-biofarma/static/js/main.a69f69d7.js.map",
     "787.9cd59d0f.chunk.js.map": "/code-food-biofarma/static/js/787.9cd59d0f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f6fd248b.css",
-    "static/js/main.29777fe8.js"
+    "static/js/main.a69f69d7.js"
   ]
 }
