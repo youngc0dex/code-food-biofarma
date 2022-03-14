@@ -143,7 +143,7 @@ const HistoryPage = (props) => {
       <Row style={{height:'100%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-button-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/> : ''}
             <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-history">Cari</Button>
             {renderSuggestionBox()}
@@ -154,6 +154,10 @@ const HistoryPage = (props) => {
         {handleRenderCategoryButton()}
       </div>
     </div>
+  }
+
+  const handleNavigateRecipeDetailPage = (recipeId, nServe) =>{
+    navigate(`/recipe/${recipeId}/${nServe}`)
   }
 
   const handleRenderCategoryButton = () =>{
@@ -280,7 +284,7 @@ const HistoryPage = (props) => {
   const handleRenderContent = () =>{
     if(historyData && historyData.length > 0){
       return historyData.map((item,index) => {
-        return <div style={{marginBottom: '1em'}}><FoodCard navigateToRatingDetail ={(a) =>navigateToRatingDetail(a) } navigateToCookDetail = {(a,b,c) => navigateToCookDetail(a,b,c)}index={index} recipe={item} type={'history'}/></div>
+        return <div style={{marginBottom: '1em'}}><FoodCard handleNavigateRecipeDetailPage = {(a,b) => handleNavigateRecipeDetailPage(a,b)} navigateToRatingDetail ={(a) =>navigateToRatingDetail(a) } navigateToCookDetail = {(a,b,c) => navigateToCookDetail(a,b,c)}index={index} recipe={item} type={'history'}/></div>
       })
     }
   }

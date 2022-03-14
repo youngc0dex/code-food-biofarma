@@ -32,12 +32,16 @@ const RecipePage = (props) => {
   const [qty,setQty] = useState(1)
   let params = useParams()
   const recipeId = params.id
+  const serveNumber = params.nServe
   let navigate = useNavigate()
   let token = localStorage.getItem('Food-Token')
 
   useEffect(() => {
     getFoodData()
     getDetailRecipeData()
+    if(serveNumber){
+      setQty(serveNumber)
+    }
   }, []);
 
 

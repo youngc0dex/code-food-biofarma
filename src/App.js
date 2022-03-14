@@ -28,6 +28,8 @@ function App(props) {
           <Route path='/rating/:id' element ={<RatingPage/>}/>
          <Route path='/history' element ={<HistoryPage/>}/>
          <Route path='/cook/:id/:nServe/:serveId' element ={<CookPage/>}/>
+         <Route path='/recipe/:id/:nServe' element ={<RecipePage/>}/>
+
       </Routes >
     </HashRouter>
   );

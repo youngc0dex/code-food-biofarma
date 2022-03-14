@@ -13,7 +13,7 @@ import Moment from "react-moment";
 
 
 const FoodCard = (props) => {
-  const {recipe,index,type, handleNavigateToRecipeDetail, redirectBack,navigateToRatingDetail, navigateToCookDetail} = props
+  const {recipe,index,type, handleNavigateToRecipeDetail,handleNavigateRecipeDetailPage, redirectBack,navigateToRatingDetail, navigateToCookDetail} = props
 
 
   const handleRenderCard =() =>{
@@ -166,7 +166,7 @@ const FoodCard = (props) => {
             </div>
 
             <div>
-              {handleRenderPercentation(recipe.nStep,recipe.nStepDone)}
+              {handleRenderPercentation(recipe.nStep,recipe.nStepDone, recipe)}
             </div>
           </div>
         </Card.Text>
@@ -196,15 +196,15 @@ const FoodCard = (props) => {
       </div>
     }
 
-    return <p style={{fontFamily:'Poppins',cursor:'pointer'}} onClick={() => navigateToRatingDetail(recipe.id)} data-cy={'history-item-text-rating'}>Belum ada penilaian</p>
+    return <p style={{fontFamily:'Poppins',cursor:'pointer'}} onClick={() => navigateToRatingDetail(recipe.id)} data-cy={'history-item-no-rating'}>Belum ada penilaian</p>
   }
 
   const handleRenderPercentation = (stepOfServe, currentServe) =>{
     let percentage = (currentServe / stepOfServe) * 100
     if(percentage == 100){
-      return <p data-cy={'history-item-button-status'} style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
+      return <p data-cy={'history-item-text-done'} onClick={() => handleNavigateRecipeDetailPage(recipe.recipeId, recipe.nServing)} style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
     }
-    return <p onClick={() =>navigateToCookDetail(recipe.recipeId,recipe.nServing,recipe.id)} data-cy={'history-item-button-status'} style={{cursor:'pointer',fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
+    return <p onClick={() =>navigateToCookDetail(recipe.recipeId,recipe.nServing,recipe.id)} data-cy={'history-item-text-progress'} style={{cursor:'pointer',fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
   }
 
   return (
