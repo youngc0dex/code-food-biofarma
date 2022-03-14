@@ -152,7 +152,7 @@ const HistoryPage = (props) => {
         </Col>
         <Col md={'auto'} style={{margin:'auto'}}>
           <div>
-            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"}/>
+            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} onClick={() => handleSearchRecipe()} src={HistoryPNG} data-cy={"header-button-history"}/>
           </div>
         </Col>
       </Row>
