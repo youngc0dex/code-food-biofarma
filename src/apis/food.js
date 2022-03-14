@@ -52,7 +52,7 @@ export const searchRecipeQuery = (q) =>{
 }
 
 export const getRecipeHistoryData = (searchQuery,sort,status) =>{
-  return axios.get(API_BASE_URL + `/serve-histories?q=${searchQuery}&sort=${sort}&status=${status}`,
+  return axios.get(API_BASE_URL + `/serve-histories?limit=40&q=${searchQuery}&sort=${sort}&status=${status}`,
     {headers: TokenService.getheader()})
 }
 

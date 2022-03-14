@@ -16,6 +16,7 @@ import {
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Select } from 'antd';
+import HistoryPNG from "../../assets/others/historyPNG.png";
 
 const { Option } = Select;
 
@@ -147,6 +148,11 @@ const HistoryPage = (props) => {
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/> : ''}
             <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
+          </div>
+        </Col>
+        <Col md={'auto'} style={{margin:'auto'}}>
+          <div>
+            <img style={{border:'1px solid #EAEAEA',textAlign:'center', borderRadius:'5px', padding:'3px', cursor:'pointer'}} src={HistoryPNG} data-cy={"header-button-history"}/>
           </div>
         </Col>
       </Row>
