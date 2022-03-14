@@ -96,10 +96,10 @@ const HistoryPage = (props) => {
     }
   }
 
-  const handleSearchRecipe =async() =>{
+  const handleSearchRecipe =async(e) =>{
     setLoad(true)
     try{
-      await getHistoryData('','','')
+      await getHistoryData(e,'','')
       setSuggestion([])
       setLoad(false)
     }catch(e){
