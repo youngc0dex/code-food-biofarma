@@ -1,6 +1,7 @@
 import React from "react";
 import {
   BrowserRouter as Router,
+  HashRouter,
   Routes ,
   Route,
   Link,
@@ -17,7 +18,7 @@ import './index.css'
 import HistoryPage from "./page/historyPage/HistoryPage";
 function App(props) {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <HashRouter basename={process.env.PUBLIC_URL}>
     {/*<Router >*/}
       <Routes>
           <Route exact path='/' element={<Homepage/>} />
@@ -28,7 +29,7 @@ function App(props) {
          <Route path='/history' element ={<HistoryPage/>}/>
          <Route path='/cook/:id/:nServe/:serveId' element ={<CookPage/>}/>
       </Routes >
-    </Router>
+    </HashRouter>
   );
 }
 
