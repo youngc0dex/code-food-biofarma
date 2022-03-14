@@ -18,7 +18,7 @@ import './index.css'
 import HistoryPage from "./page/historyPage/HistoryPage";
 function App(props) {
   return (
-    <HashRouter basename={process.env.PUBLIC_URL}>
+    <HashRouter>
     {/*<Router >*/}
       <Routes>
           <Route exact path='/' element={<Homepage/>} />
