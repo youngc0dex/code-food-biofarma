@@ -13,7 +13,7 @@ export class TokenService {
       return sessionStorage.getItem('Food-Token');
     }
 
-    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDcxOTUxMDgsInN1YiI6IjEifQ.SJmSoECYWYyGkD4F6O2PjTskk2TlZLcj2gStt8_2ivA'
+    return ''
   }
   static getheader(){
     let headers = {
