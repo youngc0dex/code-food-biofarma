@@ -6,8 +6,8 @@ import badRating from '../../assets/others/badRating.png';
 import Back from '../../assets/others/back-button.png'
 import LikeImage from '../../assets/others/RateLike.png'
 import LikeImageChosen from '../../assets/others/ratingLikeChosen.png'
-import NeutralImage from '../../assets/others/RatingNeutral.png'
-import SadImage from '../../assets/others/RatingSad.png'
+import NeutralImage from '../../assets/others/NeutralChosen.png'
+import SadImage from '../../assets/others/BadChosen.png'
 import Moment from "react-moment";
 
 
@@ -177,22 +177,22 @@ const FoodCard = (props) => {
   const handleRenderReaction = (reaction) =>{
     if(reaction == 'like'){
       return <div style={{display:'flex'}} >
-        <img src={LikeImageChosen} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
+        <img src={LikeImageChosen} style={{width:'25px',height:'25px',cursor:'pointer', margin:'0 7px'}}/>
         <p style={{color:'green',cursor:'pointer'}} data-cy={'history-item-text-rating'}>Yummy!</p>
       </div>
     }
 
     if(reaction == 'neutral'){
       return <div style={{display:'flex'}}>
-        <img src={NeutralImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green',cursor:'pointer'}} data-cy={'history-item-text-rating'}>Lumayan</p>
+        <img src={NeutralImage} style={{width:'25px',height:'25px',cursor:'pointer', margin:'0 7px'}}/>
+        <p style={{color:'black',cursor:'pointer'}} data-cy={'history-item-text-rating'}>Lumayan</p>
       </div>
     }
 
     if(reaction == 'dislike'){
       return <div style={{display:'flex'}}>
-        <img src={SadImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green', cursor:'pointer'}} data-cy={'history-item-text-rating'}>Kurang Suka</p>
+        <img src={SadImage} style={{width:'25px',height:'25px',cursor:'pointer', margin:'0 7px'}}/>
+        <p style={{color:'red', cursor:'pointer'}} data-cy={'history-item-text-rating'}>Kurang Suka</p>
       </div>
     }
 

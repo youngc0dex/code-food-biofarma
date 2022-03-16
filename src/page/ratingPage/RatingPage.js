@@ -11,7 +11,9 @@ import RatingImage from '../../assets/others/image-rate.png'
 import LikeImage from '../../assets/others/RateLike.png'
 import LikeImageChosen from '../../assets/others/ratingLikeChosen.png'
 import NeutralImage from '../../assets/others/RatingNeutral.png'
+import NeutralChosen from '../../assets/others/NeutralChosen.png'
 import SadImage from '../../assets/others/RatingSad.png'
+import BadChosen from '../../assets/others/BadChosen.png'
 import ThanksImage from '../../assets/others/image-thanks.png'
 
 
@@ -160,17 +162,17 @@ const RatingPage = (props) => {
         <div style={{margin:'5em 0'}}>
           <Row>
             <Col style={{textAlign:'center'}}>
-              <img data-cy={'button-like'} src={currentRating =='like' ? LikeImageChosen : LikeImage} style={{cursor:'pointer'}} onClick={() => setCurrentRating('like')}/>
+              <img data-cy={'button-like'} src={currentRating =='like' ? LikeImageChosen : LikeImage} style={{cursor:'pointer', width:'88px', height:'88px'}} onClick={() => setCurrentRating('like')}/>
               <p>Yummy!</p>
             </Col>
 
             <Col style={{textAlign:'center'}}>
-              <img data-cy={'button-neutral'} src={NeutralImage} style={{cursor:'pointer'}} onClick={() => setCurrentRating('neutral')}/>
+              <img data-cy={'button-neutral'} src={currentRating == 'neutral' ? NeutralChosen : NeutralImage} style={{cursor:'pointer', width:'88px', height:'88px'}} onClick={() => setCurrentRating('neutral')}/>
               <p>Lumayan</p>
             </Col>
 
             <Col style={{textAlign:'center'}}>
-              <img src={SadImage} data-cy={'button-dislike'} style={{cursor:'pointer'}} onClick={() => setCurrentRating('dislike')}/>
+              <img src={currentRating =='dislike' ? BadChosen : SadImage} data-cy={'button-dislike'} style={{cursor:'pointer', width:'88px', height:'88px'}} onClick={() => setCurrentRating('dislike')}/>
               <p>Kurang Suka</p>
             </Col>
           </Row>
