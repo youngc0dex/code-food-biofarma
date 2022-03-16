@@ -59,7 +59,7 @@ const HomePage = (props) => {
 
   const handleSearchRecipe =async() =>{
     try{
-      let response = await getFoodData(searchQuery,currentCategory,currentSort)
+      let response = await getRecipes(searchQuery)
       let responseData = response.data.data
       setFoodData(responseData)
       setSuggestion([])
@@ -83,9 +83,17 @@ const HomePage = (props) => {
     }
   }
 
+  const clearState = () =>{
+    setSearchQuery('')
+    setCurrentSort('new')
+    setCurrentCategory(0)
+  }
+
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
+    clearState()
+    getFoodData()
   }
 
   const handleNavigateLogin = () =>{
