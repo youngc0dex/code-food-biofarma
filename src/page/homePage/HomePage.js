@@ -9,19 +9,15 @@ import empty from '../../assets/others/empty.png'
 import clear from '../../assets/others/x-button.png'
 
 import {Input} from "antd";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getCategoryFood,
-  getFilteredRecipes,
-  getRecipes,
-  getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName, searchRecipeQuery
+  getRecipes, getSearchedRecipes,
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
-  const [masterFoodData, setMasterFoodData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
   const [currentSort, setCurrentSort] = useState('new')
@@ -29,20 +25,31 @@ const HomePage = (props) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
   let navigate = useNavigate()
+  let queryDefault = useParams().query
 
   useEffect(() => {
     getFoodData()
     getCategoryFoodData()
   }, []);
 
+  useEffect(() =>{
+    getFoodData()
+  },[queryDefault])
 
-  const getFoodData = async() =>{
+
+  const getFoodData = async(query,categoryId,sortBy) =>{
+    if(queryDefault){
+      getSearchedRecipes(queryDefault)
+      return
+    }
     setLoad(true)
+    let queryNew = query || '';
+    let categoryIdNew = categoryId || ''
+    let sortByNew = sortBy || ''
     try{
-      let response = await getRecipes()
+      let response = await getRecipes(queryNew,categoryIdNew, sortByNew)
       let recipeData = response.data.data
       setFoodData(recipeData)
-      setMasterFoodData(recipeData)
       setLoad(false)
     }catch(e){
       message.error('Error when fetching recipes data')
@@ -52,7 +59,7 @@ const HomePage = (props) => {
 
   const handleSearchRecipe =async() =>{
     try{
-      let response = await getSearchedRecipe(searchQuery)
+      let response = await getFoodData(searchQuery,currentCategory,currentSort)
       let responseData = response.data.data
       setFoodData(responseData)
       setSuggestion([])
@@ -79,7 +86,6 @@ const HomePage = (props) => {
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
-    setFoodData(masterFoodData)
   }
 
   const handleNavigateLogin = () =>{
@@ -118,12 +124,12 @@ const HomePage = (props) => {
       <Row style={{height:'65%'}}>
         <Col style={{margin:'auto'}}>
           <div>
-            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}}/>
+            <img data-cy='header-logo' src={HeaderLogo} style={{cursor:'pointer'}} onClick={() => navigate('/')}/>
           </div>
         </Col>
         <Col xs={7}  style={{margin:'auto'}}>
           <div>
-              <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
+            <Input style={{width:'80%'}} value={searchQuery} data-cy="header-input-search" onChange={(e) => handleInputSearch(e.target.value)}/>
             {searchQuery ? <img src={clear} data-cy='header-button-clear' style={{position: 'absolute',transform: 'translate(-25px, 3px)', cursor:'pointer'}} onClick={() =>handleClearQuery()}/> : ''}
             <Button style={{padding:'.3rem 1.2rem',marginBottom:'2px', backgroundColor:'#EF5734', border:'none'}} onClick={() => handleSearchRecipe()}  data-cy="header-button-search">Cari</Button>
             {renderSuggestionBox()}
@@ -160,40 +166,10 @@ const HomePage = (props) => {
     return 'category-non-active'
   }
 
-  const handleSearchRecipeByCategory = async(id) =>{
-    setLoad(true)
-    try{
-      let response = await getSearchedRecipeByCateogry(searchQuery, id)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error when fetching data recipe by category')
-      setLoad(false)
-    }
-  }
-
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
-    setCurrentSort('new')
-    if(searchQuery){
-      if(id == 0){
-        handleSearchRecipe()
-        return
-      }
-      handleSearchRecipeByCategory(id)
-      return
-    }
     setLoad(true)
-    try{
-      let response = await getFilteredRecipes(id)
-      let foodData = response.data.data
-      setFoodData(foodData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error fetching filter data')
-      setLoad(false)
-    }
+    await getFoodData(searchQuery,id,currentSort)
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
@@ -204,7 +180,7 @@ const HomePage = (props) => {
     if(!foodData.recipes || foodData.recipes.length == 0){
       return <div style={{margin:'0 auto', width:'587', height:'332'}}>
         <img src={empty} data-cy={'list-image-empty'}/>
-      <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
+        <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
       </div>
     }
     return foodData.recipes.map((item,index) => {
@@ -220,22 +196,7 @@ const HomePage = (props) => {
 
   const handleSort = async(sortBy) =>{
     setCurrentSort(sortBy)
-    if(sortBy == 'new'){
-      getFoodData()
-      return
-    }
-    setLoad(true)
-    try{
-      let response = await getSortedRecipeDataBySortName(sortBy)
-      let newCategoriesData = response.data.data
-      setFoodData(newCategoriesData)
-      setLoad(false)
-
-    }catch(e){
-      message.error('Error fetching sorted data')
-      setLoad(false)
-
-    }
+    await getFoodData(searchQuery,currentCategory,sortBy)
   }
 
   const renderStyleActiveSort = (code) =>{
@@ -275,8 +236,8 @@ const HomePage = (props) => {
   const handleInputSearch = async(query) =>{
     setSearchQuery(query)
     if(query.length > 1){
-      let response = await searchRecipeQuery(query)
-      let responseData = response.data.data
+      let response = await getRecipes(query, currentCategory)
+      let responseData = response.data.data.recipes
       setSuggestion(responseData)
       return
     }

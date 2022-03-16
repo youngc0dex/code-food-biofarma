@@ -12,12 +12,8 @@ import Cek from '../../assets/others/cek.png'
 import {Input} from "antd";
 import { useNavigate,useParams } from 'react-router-dom';
 import {
-  getCategoryFood,
-  getFilteredRecipes,
   getRecipes,
-  getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName,
-  getRecipeCookSteps, postCookProgress, updateCookProgress, getServeHistories
+  getRecipeCookSteps, postCookProgress, updateCookProgress, getServeHistories, getSearchedRecipes
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Steps } from 'antd';
@@ -47,13 +43,15 @@ const CookPage = (props) => {
   }, []);
 
 
-  const getFoodData = async() =>{
+  const getFoodData = async(query,categoryId,sortBy) =>{
     setLoad(true)
+    let queryNew = query || '';
+    let categoryIdNew = categoryId || ''
+    let sortByNew = sortBy || ''
     try{
-      let response = await getRecipes()
+      let response = await getRecipes(queryNew,categoryIdNew, sortByNew)
       let recipeData = response.data.data
       setFoodData(recipeData)
-      setMasterFoodData(recipeData)
       setLoad(false)
     }catch(e){
       message.error('Error when fetching recipes data')
@@ -61,16 +59,11 @@ const CookPage = (props) => {
     }
   }
 
+
   const handleSearchRecipe =async() =>{
-    try{
-      let response = await getSearchedRecipe(searchQuery)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setSuggestion([])
-    }catch(e){
-      message.error('Error when fetching searched recipe')
-    }
+    navigate('/'+searchQuery)
   }
+
 
 
   const getRecipeStepsData = async() =>{
@@ -98,7 +91,6 @@ const CookPage = (props) => {
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
-    getFoodData()
   }
 
   const handleNavigateLogin = () =>{
@@ -151,42 +143,6 @@ const CookPage = (props) => {
         </Col>
       </Row>
     </div>
-  }
-
-  const handleSearchRecipeByCategory = async(id) =>{
-    setLoad(true)
-    try{
-      let response = await getSearchedRecipeByCateogry(searchQuery, id)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error when fetching data recipe by category')
-      setLoad(false)
-    }
-  }
-
-  const handleSortCategory =async(id) =>{
-    setCurrentCategory(id)
-    setCurrentSort('new')
-    if(searchQuery){
-      if(id == 0){
-        handleSearchRecipe()
-        return
-      }
-      handleSearchRecipeByCategory(id)
-      return
-    }
-    setLoad(true)
-    try{
-      let response = await getFilteredRecipes(id)
-      let foodData = response.data.data
-      setFoodData(foodData)
-      setLoad(false)
-    }catch(e){
-      message.error('Error fetching filter data')
-      setLoad(false)
-    }
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
@@ -295,19 +251,15 @@ const CookPage = (props) => {
   }
 
 
-  const handleInputSearch = (query) =>{
+  const handleInputSearch = async(query) =>{
     setSearchQuery(query)
-    if(masterFoodData.recipes.length > 0){
-      let matchesNew = masterFoodData.recipes.filter(item => {
-          return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
-        }
-      );
-      setSuggestion(matchesNew)
+    if(query.length > 1){
+      let response = await getSearchedRecipes(query)
+      let responseData = response.data.data.recipes
+      setSuggestion(responseData)
+      return
     }
-
-    if(!query){
-      setSuggestion([])
-    }
+    setSuggestion([])
   }
 
 

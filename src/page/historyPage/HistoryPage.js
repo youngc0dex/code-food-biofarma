@@ -9,10 +9,7 @@ import {Input} from "antd";
 import { useNavigate } from 'react-router-dom';
 import {
   getCategoryFood,
-  getFilteredRecipes, getRecipeHistoryData,
-  getRecipes,
-  getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName, searchRecipeQuery
+  getRecipeHistoryData,
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import { Select } from 'antd';

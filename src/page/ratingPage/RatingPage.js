@@ -18,11 +18,8 @@ import ThanksImage from '../../assets/others/image-thanks.png'
 import {Input} from "antd";
 import { useNavigate,useParams } from 'react-router-dom';
 import {
-  getCategoryFood,
-  getFilteredRecipes,
-  getRecipes,
-  getSearchedRecipe, getSearchedRecipeByCateogry,
-  getSortedRecipeDataBySortName, sendCookReaction
+  getRecipes, getSearchedRecipes,
+  sendCookReaction
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
 import TokenService from "../../apis/auth/token";
@@ -46,13 +43,15 @@ const RatingPage = (props) => {
   }, []);
 
 
-  const getFoodData = async() =>{
+  const getFoodData = async(query,categoryId,sortBy) =>{
     setLoad(true)
+    let queryNew = query || '';
+    let categoryIdNew = categoryId || ''
+    let sortByNew = sortBy || ''
     try{
-      let response = await getRecipes()
+      let response = await getRecipes(queryNew,categoryIdNew, sortByNew)
       let recipeData = response.data.data
       setFoodData(recipeData)
-      setMasterFoodData(recipeData)
       setLoad(false)
     }catch(e){
       message.error('Error when fetching recipes data')
@@ -60,22 +59,15 @@ const RatingPage = (props) => {
     }
   }
 
+
   const handleSearchRecipe =async() =>{
-    try{
-      let response = await getSearchedRecipe(searchQuery)
-      let responseData = response.data.data
-      setFoodData(responseData)
-      setSuggestion([])
-    }catch(e){
-      message.error('Error when fetching searched recipe')
-    }
+    navigate('/'+searchQuery)
   }
 
 
   const handleClearQuery = () =>{
     setSearchQuery('')
     setSuggestion([])
-    getFoodData()
   }
 
   const handleClickSuggestion = (item) =>{
@@ -126,19 +118,15 @@ const RatingPage = (props) => {
     </div>
   }
 
-  const handleInputSearch = (query) =>{
+  const handleInputSearch = async(query) =>{
     setSearchQuery(query)
-    if(masterFoodData.recipes.length > 0){
-      let matchesNew = masterFoodData.recipes.filter(item => {
-          return Object.values(item.name).join('').toLowerCase().includes(query.toLowerCase())
-        }
-      );
-      setSuggestion(matchesNew)
+    if(query.length > 1){
+      let response = await getSearchedRecipes(query)
+      let responseData = response.data.data.recipes
+      setSuggestion(responseData)
+      return
     }
-
-    if(!query){
-      setSuggestion([])
-    }
+    setSuggestion([])
   }
 
 

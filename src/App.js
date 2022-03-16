@@ -29,6 +29,7 @@ function App(props) {
          <Route path='/history' element ={<HistoryPage/>}/>
          <Route path='/cook/:id/:nServe/:serveId' element ={<CookPage/>}/>
          <Route path='/recipe/:id/:nServe' element ={<RecipePage/>}/>
+        <Route exact path='/:query' element={<Homepage/>} />
 
       </Routes >
     </HashRouter>
