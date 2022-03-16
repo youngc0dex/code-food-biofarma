@@ -17,11 +17,11 @@ import { useNavigate } from 'react-router-dom';
 const { Header, Footer, Sider, Content } = Layout;
 
 const Login = () => {
-  const [invalidData, setInvalidData] = useState(false)
   const [invalidEmailCount, setInvalidEmailCount] = useState([])
-  const [invalidCountWarning, setInvalidCountWarning] = useState(false)
-  const [isStillCantLogin, setIsStillCantLogin] = useState(false)
-  const [errorEmailAndPass, setErrorEmailAndPass] = useState(false)
+  const [errors, setErrors] = useState({
+    errorMessage:'',
+    errorType:''
+  })
   let navigate = useNavigate()
 
 
@@ -44,28 +44,12 @@ const Login = () => {
     </div>
   }
 
-  const stillCantLogin = (email) =>{
-   let findIndex = invalidEmailCount.findIndex(item => item.email == email)
-    if(findIndex > -1){
-      if(invalidEmailCount[findIndex].cantLogin){
-        setIsStillCantLogin(true)
-        setInvalidData(false)
-        setInvalidCountWarning(false)
-        return false
-      }
-    }
-    return true
-  }
 
 
   const handleSubmit = async(values,isValid, errors) =>{
 
     if(!isValid) {
-      console.log(errors, ' ini errrors')
       renderErrorEmailAndPassword(errors)
-      return
-    }
-    if(!stillCantLogin(values.email)){
       return
     }
 
@@ -74,23 +58,21 @@ const Login = () => {
       password: values.password
     }
 
-    try{
-      let response = await loginUser(payload)
+    let response = await loginUser(payload)
+    if(response.success){
       saveIntoLocalStorage(response.data, payload)
-
-      setIsStillCantLogin(false)
-      setInvalidData(false)
-      setInvalidCountWarning(false)
       navigate('/')
-    }catch(e){
-      setIsStillCantLogin(false)
-      setInvalidData(true)
-      putIntoEmailInvalidCount(values.email)
+      return
     }
+    setErrors({
+      errorMessage: response.message,
+      errorType: 'invalid'
+    })
+    putIntoEmailInvalidCount(values.email)
   }
 
   const saveIntoLocalStorage = (data, userData) =>{
-    const token = data.data.token;
+    const token = data.token;
     const obj = {
       userEmail: userData.username,
     };
@@ -107,15 +89,16 @@ const Login = () => {
     if(findIndex > -1 ){
       let invalidCountForCurrentIndex = invalidEmailCountData[findIndex].invalidCount
       if(invalidCountForCurrentIndex == 3){
-        setInvalidData(false)
-        setInvalidCountWarning(true)
+        setErrors({
+          errorMessage: 'Terlalu banyak percobaan, pastikan data Email dan Password anda benar.',
+          errorType: 'too many attempt'
+        })
         if(!invalidEmailCountData[findIndex].cantLogin){
           blockCurrentEmail(findIndex,email)
         }
         return
       }
       invalidEmailCountData[findIndex].invalidCount += 1
-      setInvalidCountWarning(false)
       return
     }
 
@@ -127,7 +110,6 @@ const Login = () => {
 
     invalidEmailCountData.push(newData)
     setInvalidEmailCount(invalidEmailCountData)
-    setInvalidCountWarning(false)
   }
 
   const blockCurrentEmail =(index, email) =>{
@@ -145,24 +127,32 @@ const Login = () => {
     navigate('/')
   }
 
+  const renderErrorMessage = () =>{
+    if(errors.errorType){
+      return <div>
+        <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
+          <p data-cy="form-alert-text" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>{errors.errorMessage}</p>
+          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setErrors({
+            errorMessage:'',
+            errorType:''
+          })}>OK</p>
+        </div>
+      </div>
+    }
+  }
+
   const renderErrorEmailAndPassword = (error) =>{
 
     if(error.email){
-      setErrorEmailAndPass(true)
-      return <div style={{display: errorEmailAndPass ? 'block' : 'none'}}>
-        <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
-          <p data-cy="form-alert-text" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>{error.email}</p>
-          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setErrorEmailAndPass(false)}>OK</p>
-        </div>
-      </div>
-    }else if(error.password){
-      setErrorEmailAndPass(true)
-      return <div style={{display: errorEmailAndPass ? 'block' : 'none'}}>
-        <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
-          <p data-cy="form-alert-text" style={{fontSize:'16px', color:'white', marginBottom:'0'}}>{error.password}</p>
-          <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setErrorEmailAndPass(false)}>OK</p>
-        </div>
-      </div>
+      setErrors({
+        errorMessage:error.email,
+        errorType:'email'
+      })
+    }else if(error.password) {
+      setErrors({
+        errorMessage: error.password,
+        errorType: 'password'
+      })
     }
   }
 
@@ -192,24 +182,7 @@ const Login = () => {
 
             <Col md={6} lg={6}>
               <Card className={'card-settings'}>
-                {errorEmailAndPass ? renderErrorEmailAndPassword(errors) : ''}
-                <div data-cy='form-alert-container' style={{display: isStillCantLogin ? 'block' : 'none'}}>
-                  <div style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
-                    <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Terlalu banyak percobaan, coba kembali setelah 1 menit</p>
-                  </div>
-                </div>
-                <div style={{display: invalidCountWarning ? 'block' : 'none'}}>
-                  <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
-                    <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Terlalu banyak percobaan, pastikan data Email dan Password anda benar.</p>
-                  </div>
-                </div>
-
-                <div style={{display: invalidData ? 'block' : 'none'}}>
-                  <div data-cy='form-alert-container' style={{display:'flex', justifyContent:'space-between', backgroundColor:'black',padding:'1em'}}>
-                    <p style={{fontSize:'16px', color:'white', marginBottom:'0'}}>Email / Password anda salah</p>
-                    <p style={{fontSize:'16px', color:'#BB86FC',marginBottom:'0', cursor:'pointer'}} data-cy="form-alert-button-ok" onClick={() => setInvalidData(false)}>OK</p>
-                  </div>
-                </div>
+                {renderErrorMessage()}
                 <div className={'card-content'}>
                   <p data-cy={'form-text-title'} className={'card-login-header'}>Login</p>
                 </div>
