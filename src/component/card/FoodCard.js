@@ -178,21 +178,21 @@ const FoodCard = (props) => {
     if(reaction == 'like'){
       return <div style={{display:'flex'}} >
         <img src={LikeImageChosen} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Yummy!</p>
+        <p style={{color:'green',cursor:'pointer'}} data-cy={'history-item-text-rating'}>Yummy!</p>
       </div>
     }
 
     if(reaction == 'neutral'){
       return <div style={{display:'flex'}}>
         <img src={NeutralImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Lumayan</p>
+        <p style={{color:'green',cursor:'pointer'}} data-cy={'history-item-text-rating'}>Lumayan</p>
       </div>
     }
 
     if(reaction == 'dislike'){
       return <div style={{display:'flex'}}>
         <img src={SadImage} style={{width:'30px',height:'30px',cursor:'pointer'}}/>
-        <p style={{color:'green'}} data-cy={'history-item-text-rating'}>Kurang Suka</p>
+        <p style={{color:'green', cursor:'pointer'}} data-cy={'history-item-text-rating'}>Kurang Suka</p>
       </div>
     }
 
@@ -202,7 +202,7 @@ const FoodCard = (props) => {
   const handleRenderPercentation = (stepOfServe, currentServe) =>{
     let percentage = (currentServe / stepOfServe) * 100
     if(percentage == 100){
-      return <p data-cy={'history-item-text-done'} onClick={() => handleNavigateRecipeDetailPage(recipe.recipeId, recipe.nServing)} style={{fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
+      return <p data-cy={'history-item-text-done'} onClick={() => handleNavigateRecipeDetailPage(recipe.recipeId, recipe.nServing)} style={{cursor:'pointer',fontFamily:'Poppins', color:'red'}}>Selesai ({Math.ceil(percentage)}%)</p>
     }
     return <p onClick={() =>navigateToCookDetail(recipe.recipeId,recipe.nServing,recipe.id)} data-cy={'history-item-text-progress'} style={{cursor:'pointer',fontFamily:'Poppins', color:'Orange'}}>Dalam Proses ({Math.ceil(percentage)}%)</p>
   }
