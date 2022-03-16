@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 const { Header, Footer, Sider, Content } = Layout;
 
 const Login = () => {
-  const [invalidEmailCount, setInvalidEmailCount] = useState([])
   const [errors, setErrors] = useState({
     errorMessage:'',
     errorType:''
@@ -47,7 +46,6 @@ const Login = () => {
 
 
   const handleSubmit = async(values,isValid, errors) =>{
-
     if(!isValid) {
       renderErrorEmailAndPassword(errors)
       return
@@ -68,7 +66,6 @@ const Login = () => {
       errorMessage: response.message,
       errorType: 'invalid'
     })
-    putIntoEmailInvalidCount(values.email)
   }
 
   const saveIntoLocalStorage = (data, userData) =>{
@@ -80,47 +77,6 @@ const Login = () => {
     localStorage.setItem('foodUserData', encryptedData);
     sessionStorage.setItem('Food-Token', token)
     TokenService.setToken('Food-Token', token);
-  }
-
-  const putIntoEmailInvalidCount = (email) =>{
-    let invalidEmailCountData = [...invalidEmailCount]
-    let findIndex = invalidEmailCountData.findIndex(item => item.email == email);
-
-    if(findIndex > -1 ){
-      let invalidCountForCurrentIndex = invalidEmailCountData[findIndex].invalidCount
-      if(invalidCountForCurrentIndex == 3){
-        setErrors({
-          errorMessage: 'Terlalu banyak percobaan, pastikan data Email dan Password anda benar.',
-          errorType: 'too many attempt'
-        })
-        if(!invalidEmailCountData[findIndex].cantLogin){
-          blockCurrentEmail(findIndex,email)
-        }
-        return
-      }
-      invalidEmailCountData[findIndex].invalidCount += 1
-      return
-    }
-
-    let newData = {
-      email:email,
-      invalidCount:1,
-      cantLogin:false
-    }
-
-    invalidEmailCountData.push(newData)
-    setInvalidEmailCount(invalidEmailCountData)
-  }
-
-  const blockCurrentEmail =(index, email) =>{
-    invalidEmailCount[index].cantLogin = true
-    setTimeout(() =>{
-      let findIndex = invalidEmailCount.findIndex(item => item.email == email)
-      if(findIndex > -1){
-        invalidEmailCount[findIndex].invalidCount = 0
-        invalidEmailCount[findIndex].cantLogin = false
-      }
-    }, 60000)
   }
 
   const handleSkipLogin = () =>{
@@ -142,14 +98,15 @@ const Login = () => {
   }
 
   const renderErrorEmailAndPassword = (error) =>{
-
-    if(error.email){
-      setErrors({
-        errorMessage:error.email,
-        errorType:'email'
+    if(error.email) {
+      return setErrors({
+        errorMessage: error.email,
+        errorType: 'email'
       })
-    }else if(error.password) {
-      setErrors({
+
+    }
+    if(error.password) {
+      return setErrors({
         errorMessage: error.password,
         errorType: 'password'
       })
