@@ -14,6 +14,7 @@ import {
 import FoodCard from "../../component/card/FoodCard";
 import { Select } from 'antd';
 import HistoryPNG from "../../assets/others/historyPNG.png";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const { Option } = Select;
 
@@ -43,14 +44,15 @@ const HistoryPage = (props) => {
     navigate('/rating/'+serveId)
   }
 
-  const getHistoryData = async(searchQueries, currentSorts, currentStatuses,category) =>{
+  const getHistoryData = async(limit,searchQueries, currentSorts, currentStatuses,category) =>{
+    let newLimit = limit || 8;
     let sq = searchQueries ? searchQueries : ''
     let cs = currentSorts ? currentSorts : ''
     let cst = currentStatuses ? currentStatuses : ''
     let ctg = category ? category : ''
 
     try{
-      let response = await getRecipeHistoryData(sq,cs,cst, ctg)
+      let response = await getRecipeHistoryData(newLimit,sq,cs,cst, ctg)
       let responseData = response.data.data.history
       setHistoryData(responseData)
     }catch(e){
@@ -103,7 +105,7 @@ const HistoryPage = (props) => {
   const handleSearchRecipe =async() =>{
     setLoad(true)
     try{
-      await getHistoryData(searchQuery)
+      await getHistoryData(8,searchQuery)
       setSuggestion([])
       clearState()
       setLoad(false)
@@ -179,8 +181,9 @@ const HistoryPage = (props) => {
   }
 
   const handleModalClick = async(code, index, title) =>{
+    setCurrentStatus(code)
     try{
-      await getHistoryData(searchQuery,currentSort, code,currentCategory)
+      await getHistoryData(8,searchQuery,currentSort, code,currentCategory)
       categoryFoodData[index].name = title
       setShowModal(false)
     }catch(e){
@@ -223,7 +226,7 @@ const HistoryPage = (props) => {
 
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
-    getHistoryData(searchQuery,currentSort,currentStatus,id)
+    getHistoryData(8,searchQuery,currentSort,currentStatus,id)
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
@@ -240,7 +243,7 @@ const HistoryPage = (props) => {
   const handleSort = async(sortBy) =>{
     setLoad(true)
     try{
-      await getHistoryData(searchQuery,sortBy,currentStatus,currentCategory)
+      await getHistoryData(8,searchQuery,sortBy,currentStatus,currentCategory)
       setCurrentSort(sortBy)
       setLoad(false)
     }catch(e){
@@ -286,8 +289,7 @@ const HistoryPage = (props) => {
   const handleInputSearch = async(query) =>{
     setSearchQuery(query)
     if(query.length > 1){
-      let response = await getRecipeHistoryData(query,'','','')
-      console.log(response, ' ini dia')
+      let response = await getRecipeHistoryData(8,query,'','','')
       let responseData = response.data.data.history
       setSuggestion(responseData)
       return
@@ -295,11 +297,28 @@ const HistoryPage = (props) => {
     setSuggestion([])
   }
 
+  const fetchMoreData = async(limit) =>{
+    try{
+      let response = await getRecipeHistoryData(limit,searchQuery,currentSort,currentStatus,currentCategory)
+      let responseData = response.data.data.history
+      setHistoryData(responseData)
+    }catch(e){
+      message.error('Error fetching history data')
+    }
+  }
+
   const handleRenderContent = () =>{
     if(historyData && historyData.length > 0){
-      return historyData.map((item,index) => {
-        return <div style={{marginBottom: '1em'}}><FoodCard handleNavigateRecipeDetailPage = {(a,b) => handleNavigateRecipeDetailPage(a,b)} navigateToRatingDetail ={(a) =>navigateToRatingDetail(a) } navigateToCookDetail = {(a,b,c) => navigateToCookDetail(a,b,c)}index={index} recipe={item} type={'history'}/></div>
-      })
+      return <InfiniteScroll
+        dataLength={historyData.length + 8}
+        next={() => fetchMoreData(historyData.length + 8)}
+        hasMore={true}
+        loader={<h4><Spinner/></h4>}
+      >
+        {historyData.map((item,index) => {
+        return <div style={{marginBottom: '1em'}}><FoodCard handleNavigateRecipeDetailPage = {(a,b) => handleNavigateRecipeDetailPage(a,b)} navigateToRatingDetail ={(a) =>navigateToRatingDetail(a)} navigateToCookDetail = {(a,b,c) => navigateToCookDetail(a,b,c)}index={index} recipe={item} type={'history'}/></div>
+      })}
+      </InfiniteScroll>
     }
   }
 

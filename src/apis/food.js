@@ -3,12 +3,12 @@ import { API_BASE_URL } from '../constants/defaultValues';
 import TokenService from "./auth/token";
 import token from "./auth/token";
 
-export const getRecipes = (query,categoryId,sort) =>{
-  return axios.get(API_BASE_URL + `/recipes?q=${query}&categoryId=${categoryId}&sort=${sort}`)
+export const getRecipes = (limit,query,categoryId,sort) =>{
+  return axios.get(API_BASE_URL + `/recipes?limit=${limit}&q=${query}&categoryId=${categoryId}&sort=${sort}`)
 }
 
-export const getSearchedRecipes = (query) =>{
-  return axios.get(API_BASE_URL + `/recipes?q=${query}`)
+export const getSearchedRecipes = (limit,query) =>{
+  return axios.get(API_BASE_URL + `/recipes?limit=${limit}&q=${query}`)
 }
 
 export const getCategoryFood = () =>{
@@ -39,8 +39,8 @@ export const searchRecipeQuery = (q) =>{
   return axios.get(API_BASE_URL + '/search/recipes?limit&q=' + q)
 }
 
-export const getRecipeHistoryData = (searchQuery,sort,status,categoryId) =>{
-  return axios.get(API_BASE_URL + `/serve-histories?limit=10&q=${searchQuery}&sort=${sort}&status=${status}&categoryId=${categoryId}`,
+export const getRecipeHistoryData = (limit,searchQuery,sort,status,categoryId) =>{
+  return axios.get(API_BASE_URL + `/serve-histories?limit=${limit}&q=${searchQuery}&sort=${sort}&status=${status}&categoryId=${categoryId}`,
     {headers: TokenService.getheader()})
 }
 

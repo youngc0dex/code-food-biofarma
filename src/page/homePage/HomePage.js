@@ -15,13 +15,14 @@ import {
   getRecipes, getSearchedRecipes,
 } from "../../apis/food";
 import FoodCard from "../../component/card/FoodCard";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const HomePage = (props) => {
   const [foodData, setFoodData] = useState([])
   const [categoryFoodData, setCategoryFoodData] = useState([])
   const [load, setLoad] = useState(false)
-  const [currentSort, setCurrentSort] = useState('new')
-  const [currentCategory, setCurrentCategory] = useState(0)
+  const [currentSort, setCurrentSort] = useState('')
+  const [currentCategory, setCurrentCategory] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestion, setSuggestion] = useState([])
   let navigate = useNavigate()
@@ -37,7 +38,8 @@ const HomePage = (props) => {
   },[queryDefault])
 
 
-  const getFoodData = async(query,categoryId,sortBy) =>{
+  const getFoodData = async(limit,query,categoryId,sortBy) =>{
+    let newLimit = limit || 8
     if(queryDefault){
       getSearchedRecipes(queryDefault)
       return
@@ -47,7 +49,7 @@ const HomePage = (props) => {
     let categoryIdNew = categoryId || ''
     let sortByNew = sortBy || ''
     try{
-      let response = await getRecipes(queryNew,categoryIdNew, sortByNew)
+      let response = await getRecipes(newLimit,queryNew,categoryIdNew, sortByNew)
       let recipeData = response.data.data
       setFoodData(recipeData)
       setLoad(false)
@@ -57,9 +59,10 @@ const HomePage = (props) => {
     }
   }
 
+
   const handleSearchRecipe =async() =>{
     try{
-      let response = await getRecipes(searchQuery)
+      let response = await getRecipes(8,searchQuery)
       let responseData = response.data.data
       setFoodData(responseData)
       setSuggestion([])
@@ -85,7 +88,7 @@ const HomePage = (props) => {
 
   const clearState = () =>{
     setSearchQuery('')
-    setCurrentSort('new')
+    setCurrentSort('')
     setCurrentCategory(0)
   }
 
@@ -177,11 +180,23 @@ const HomePage = (props) => {
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
     setLoad(true)
-    await getFoodData(searchQuery,id,currentSort)
+    await getFoodData('',searchQuery,id,currentSort)
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
     navigate('/recipe/'+id)
+  }
+
+  const fetchMoreData = async(limit) =>{
+    try{
+      let response = await getRecipes(limit, searchQuery,currentCategory,currentSort)
+      let recipeData = response.data.data
+      setFoodData(recipeData)
+      setLoad(false)
+    }catch(e){
+      message.error('Error when fetching recipes data')
+      setLoad(false)
+    }
   }
 
   const handleRenderContent = () =>{
@@ -191,9 +206,20 @@ const HomePage = (props) => {
         <p data-cy={'list-text-empty'} style={{marginTop:'1em',textAlign:'center', fontSize:'18px',lineHeight:'32.4px', fontWeight:'500', fontFamily:'Poppins'}}>Oops! Resep tidak ditemukan.</p>
       </div>
     }
-    return foodData.recipes.map((item,index) => {
-      return <FoodCard index ={index} recipe={item} type={'list'} handleNavigateToRecipeDetail={(id) => handleNavigateToRecipeDetail(id)}/>
-    })
+
+    return <InfiniteScroll
+      dataLength={foodData.total}
+      next={() => fetchMoreData(foodData.recipes.length + 8)}
+      hasMore={true}
+      loader={<h4><Spinner/></h4>}
+    >
+      <div className={'homepage-body-cards'}>
+        {foodData.recipes.map((item,index) => {
+          return <FoodCard index={index} recipe={item} type={'list'}
+                           handleNavigateToRecipeDetail={(id) => handleNavigateToRecipeDetail(id)}/>
+        })}
+      </div>
+    </InfiniteScroll>
   }
 
   const renderSpinner = () =>{
@@ -204,7 +230,7 @@ const HomePage = (props) => {
 
   const handleSort = async(sortBy) =>{
     setCurrentSort(sortBy)
-    await getFoodData(searchQuery,currentCategory,sortBy)
+    await getFoodData('',searchQuery,currentCategory,sortBy)
   }
 
   const renderStyleActiveSort = (code) =>{
@@ -218,7 +244,7 @@ const HomePage = (props) => {
     let sortButton =[
       {
         name:'Terbaru',
-        code:'new',
+        code:'',
         dataCy:'button-sort-latest'
       },{
         name:'Urutkan A-Z',
@@ -244,7 +270,7 @@ const HomePage = (props) => {
   const handleInputSearch = async(query) =>{
     setSearchQuery(query)
     if(query.length > 1){
-      let response = await getRecipes(query, currentCategory)
+      let response = await getRecipes(8,query, currentCategory)
       let responseData = response.data.data.recipes
       setSuggestion(responseData)
       return
@@ -265,9 +291,10 @@ const HomePage = (props) => {
               {renderSortButton()}
             </div>
           </div>
-          {load ? renderSpinner() : <div className={'homepage-body-cards'}>
+          {load ? renderSpinner() : <div>
             {handleRenderContent()}
-          </div>}
+          </div>
+            }
         </div>
       </div>
     </div>
