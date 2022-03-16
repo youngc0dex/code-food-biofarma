@@ -43,13 +43,14 @@ const HistoryPage = (props) => {
     navigate('/rating/'+serveId)
   }
 
-  const getHistoryData = async(searchQueries, currentSorts, currentStatuses) =>{
-    let sq = searchQueries ? searchQueries : searchQuery ? searchQuery : '';
-    let cs = currentSorts ? currentSorts : currentSort ? currentSort : ''
-    let cst = currentStatuses ? currentStatuses :currentStatus ? currentStatus : ''
+  const getHistoryData = async(searchQueries, currentSorts, currentStatuses,category) =>{
+    let sq = searchQueries ? searchQueries : ''
+    let cs = currentSorts ? currentSorts : ''
+    let cst = currentStatuses ? currentStatuses : ''
+    let ctg = category ? category : ''
 
     try{
-      let response = await getRecipeHistoryData(sq,cs,cst)
+      let response = await getRecipeHistoryData(sq,cs,cst, ctg)
       let responseData = response.data.data.history
       setHistoryData(responseData)
     }catch(e){
@@ -93,11 +94,18 @@ const HistoryPage = (props) => {
     }
   }
 
-  const handleSearchRecipe =async(e) =>{
+  const clearState = () =>{
+    setCurrentCategory(0)
+    setCurrentSort('newest')
+    setCurrentStatus('')
+  }
+
+  const handleSearchRecipe =async() =>{
     setLoad(true)
     try{
-      await getHistoryData(e,'','')
+      await getHistoryData(searchQuery)
       setSuggestion([])
+      clearState()
       setLoad(false)
     }catch(e){
       setLoad(true)
@@ -108,11 +116,12 @@ const HistoryPage = (props) => {
   const handleClearQuery = () =>{
     setSuggestion([])
     setSearchQuery('')
-    getHistoryData(' ','','',)
+    clearState()
+    getHistoryData()
   }
 
   const handleClickSuggestion = (item) =>{
-    navigate('/recipe/' +item.recipeId)
+    navigate('/recipe/' +item.recipeId +'/' + item.nServing)
   }
 
   const renderSuggestionBox = () =>{
@@ -171,7 +180,7 @@ const HistoryPage = (props) => {
 
   const handleModalClick = async(code, index, title) =>{
     try{
-      await getHistoryData('','', code)
+      await getHistoryData(searchQuery,currentSort, code,currentCategory)
       categoryFoodData[index].name = title
       setShowModal(false)
     }catch(e){
@@ -214,6 +223,7 @@ const HistoryPage = (props) => {
 
   const handleSortCategory =async(id) =>{
     setCurrentCategory(id)
+    getHistoryData(searchQuery,currentSort,currentStatus,id)
   }
 
   const handleNavigateToRecipeDetail = (id) =>{
@@ -230,7 +240,7 @@ const HistoryPage = (props) => {
   const handleSort = async(sortBy) =>{
     setLoad(true)
     try{
-      await getHistoryData('',sortBy,'','')
+      await getHistoryData(searchQuery,sortBy,currentStatus,currentCategory)
       setCurrentSort(sortBy)
       setLoad(false)
     }catch(e){
@@ -276,7 +286,8 @@ const HistoryPage = (props) => {
   const handleInputSearch = async(query) =>{
     setSearchQuery(query)
     if(query.length > 1){
-      let response = await getRecipeHistoryData(query,currentSort,currentStatus)
+      let response = await getRecipeHistoryData(query,'','','')
+      console.log(response, ' ini dia')
       let responseData = response.data.data.history
       setSuggestion(responseData)
       return
